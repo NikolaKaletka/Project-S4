@@ -70,7 +70,7 @@ section .bg {
 }
 
 .Bienvenue .inputBox ::placeholder {
-  color: #020202;
+  color: #464646;
 }
 
 .Bienvenue.inputBox #btn {
@@ -94,7 +94,7 @@ section .bg {
 }
 .Bienvenue .groupe a {
   font-size: 1.25em;
-  color: #000000;
+  color: #292727;
   font-weight: 500;
   text-decoration: none;
   min-width: 150px; 
