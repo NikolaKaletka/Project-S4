@@ -150,11 +150,3 @@ VALUES
 	(1, 'packer la brosse les dents', 0, 4);
     
  
-
-
-
-
-
-
-
-

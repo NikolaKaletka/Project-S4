@@ -1,0 +1,73 @@
+.background {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* j'arrive pas à afficher la photo */
+    background-image: url('lister.webp'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    z-index: -1; 
+}
+.navbar {
+    position: fixed;
+    top: -5px;
+    left: 0;
+    right: 0;
+    padding: 10px 20px;
+    z-index: 1000;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px; 
+    justify-content: flex-end;  /* Alignement à droite */
+}
+
+.navbar-menu .menu-toggle {
+    display: none; 
+}
+
+.navbar-menu a{
+    font-size: 1.1rem;
+    font-family:  'Courier New', Courier, monospace;
+    color:#000000f0;
+    background-color: #543699;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    border-radius: 40px;
+    text-decoration: none;
+    border: 2px solid #543699(28, 105, 183); /* Bordure toujours visible */
+    outline: none;
+    transition: transform 0.2s ease-in-out; /* Ajout de la transition */
+}
+
+.navbar-menu a:hover {
+    transform: translateY(-3px); /* Déplace légèrement vers le haut */
+    background-color: rgb(247, 94, 67);
+    color: rgb(247, 247, 247);
+}
+.btn {
+    font-family:  'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    border-radius: 40px;
+    padding: 0.8rem 1rem;
+    background-color: #69529d !important; /* Bleu */
+    color: white !important;
+    border: 2px solid  #69529d!important;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, background-color 0.3s;
+}
+
+.btn:hover {
+    font-family:  'Courier New', Courier, monospace;
+    background-color: rgb(236, 142, 125)!important; /* Orange au survol */
+    border-color:rgb(236, 142, 125) !important;
+    color: white !important;
+    transform: translateY(-3px);
+}

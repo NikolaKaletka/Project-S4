@@ -5,6 +5,28 @@
   box-sizing: border-box;
   
 }
+/* Style pour les alertes */
+.alert {
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.alert.success {
+  background-color: #28a745; /* Vert pour succès */
+  color: white;
+}
+
+.alert.error {
+  background-color: #dc3545; /* Rouge pour erreur */
+  color: white;
+}
+
+.alert.info {
+  background-color: #17a2b8; /* Bleu pour info */
+  color: white;
+}
 
 section {
   position: relative;
