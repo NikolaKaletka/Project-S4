@@ -159,3 +159,7 @@ CREATE TABLE Avis (
     FOREIGN KEY (ref_utilisateur) REFERENCES Utilisateur(id_utilisateur),
     FOREIGN KEY (ref_voyage) REFERENCES Voyage(id_voyage)
 );
+INSERT INTO Avis (commentaire, note, ref_utilisateur, ref_voyage) 
+VALUES 
+('Super voyage, Rome était magnifique !', 5, 3, 1),
+('Voyage agréable mais quelques soucis avec le logement.', 3, 3, 2);
