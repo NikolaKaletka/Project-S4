@@ -149,4 +149,13 @@ INSERT Checklist_avant_depart(id_checklist, description_tache, est_fait, ref_voy
 VALUES 
 	(1, 'packer la brosse les dents', 0, 4);
     
- 
+CREATE TABLE Avis (
+    id_avis INTEGER PRIMARY KEY AUTO_INCREMENT,
+    commentaire TEXT NOT NULL,
+    note INTEGER CHECK (note >= 1 AND note <= 5), -- Note entre 1 et 5
+    date_avis DATE DEFAULT CURRENT_DATE, -- Date de publication de l'avis
+    ref_utilisateur INTEGER,
+    ref_voyage INTEGER,
+    FOREIGN KEY (ref_utilisateur) REFERENCES Utilisateur(id_utilisateur),
+    FOREIGN KEY (ref_voyage) REFERENCES Voyage(id_voyage)
+);

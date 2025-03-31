@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Inscription</title>
-    <link rel="stylesheet" href="pagedeconnexion/style.css">
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
     <section>

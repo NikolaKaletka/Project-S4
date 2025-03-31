@@ -63,7 +63,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <title>Réinitialisation</title>
-    <link rel="stylesheet" href="pagedeconnexion/style.css">
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
     <section>
