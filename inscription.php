@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <section>
-        <img src="pagedeconnexion/bg.webp" class="bg">
+        <img src="static/bg.webp" class="bg">
         <div class="Bienvenue">
             <h2><em>Ton voyage commence ici !</em></h2>
             <form action="inscription.php" method="POST">

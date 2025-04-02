@@ -1,4 +1,7 @@
 <?php
+// Activer le reporting des erreurs MySQLi
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 // Connexion à la base de données
 $serveur = "127.0.0.1"; 
 $utilisateur = "root";  
@@ -14,14 +17,16 @@ if ($conn->connect_error) {
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["email"];
-    $nouveau_mdp = $_POST["nouveau_mdp"];  // Nouveau mot de passe
-    $confirm_mdp = $_POST["confirm_mdp"];  // Confirmation du mot de passe
+    // Récupération et nettoyage des données
+    $email = trim($_POST["email"]);
+    $nouveau_mdp = trim($_POST["nouveau_mdp"]);
+    $confirm_mdp = trim($_POST["confirm_mdp"]);
+
+    echo "🔍 Email reçu : " . htmlspecialchars($email) . "<br>";
 
     // Vérifier que les mots de passe correspondent
     if ($nouveau_mdp !== $confirm_mdp) {
-        echo "❌ Les mots de passe ne correspondent pas.";
-        exit();  // Arrêter l'exécution si les mots de passe ne correspondent pas
+        die("❌ Les mots de passe ne correspondent pas.");
     }
 
     // Vérifier si l'email existe
@@ -31,20 +36,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        // L'email existe, on peut mettre à jour le mot de passe
+        // L'email existe
         $stmt->bind_result($id_utilisateur);
         $stmt->fetch();
         $stmt->close();
+        echo "✅ Email trouvé, ID utilisateur : $id_utilisateur <br>";
 
-        // Hash du mot de passe pour plus de sécurité
+        // Hash du mot de passe
         $mdp_hash = password_hash($nouveau_mdp, PASSWORD_DEFAULT);
+        echo "🔑 Hash généré : $mdp_hash <br>";
 
+        // Mise à jour du mot de passe
         $stmt = $conn->prepare("UPDATE Utilisateur SET mot_de_passe = ? WHERE id_utilisateur = ?");
         $stmt->bind_param("si", $mdp_hash, $id_utilisateur);
+
         if ($stmt->execute()) {
             echo "✅ Mot de passe mis à jour avec succès.";
         } else {
-            echo "❌ Erreur lors de la mise à jour du mot de passe.";
+            echo "❌ Erreur SQL lors de la mise à jour : " . $stmt->error;
         }
         $stmt->close();
     } else {
@@ -55,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Fermer la connexion
 $conn->close();
 ?>
-``
+
 
 
 <!DOCTYPE html>
@@ -67,10 +76,10 @@ $conn->close();
 </head>
 <body>
     <section>
-        <img src="pagedeconnexion/bg.webp" class="bg">
+        <img src="static/bg.webp" class="bg">
         <div class="Bienvenue">
             <h2><em>Réinitialisation</em></h2>
-            <form action="traitement.php" method="POST">
+            <form action="Réinitialisation.php" method="POST">
                 <div class="inputBox">
                     <input type="email" name="email" placeholder="Email" required>
                 </div>

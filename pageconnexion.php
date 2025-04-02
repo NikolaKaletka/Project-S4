@@ -58,7 +58,20 @@ $conn->close();
 </head>
 <body>
     <section>
-        <img src="pagedeconnexion/bg.webp" class="bg">
+        <img src="static/bg.webp" class="bg">
+        <header>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <div class="navbar-collapse">
+                    <div class="navbar-menu">
+                        <a class="nav-link" href="avis.php">Avis</a>
+                        <a class="nav-link" href="#">Contact</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
         <div class="Bienvenue">
             <h2> <em>Accéder à mon voyage</em> </h2>
             <form action="" method="POST">
