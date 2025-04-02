@@ -1,6 +1,4 @@
 <?php
-// Activer le reporting des erreurs MySQLi
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // Connexion à la base de données
 $serveur = "127.0.0.1"; 
