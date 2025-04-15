@@ -1,7 +1,7 @@
 <?php
-$host = 'localhost'; // Adresse du serveur
+$host = '127.0.0.1'; // Adresse du serveur
 $username = 'root'; // Nom d'utilisateur MySQL
-$password = 'paris2024';
+$password = 'rootroot';
 // Mot de passe MySQL (par défaut vide dans XAMPP)
 $database = 'PlanVoyages'; // Nom de la base de données
 // Connexion à la base de données
