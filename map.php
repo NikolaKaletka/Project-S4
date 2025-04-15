@@ -8,45 +8,9 @@ include 'header.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carte Interactive avec Géolocalisation</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="static/map.css">
 </head>
 <body>
-    <style>
-        body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-}
-
-header {
-    background-color:rgb(171, 214, 246);
-    color: white;
-    padding: 15px;
-}
-
-#search {
-    padding: 8px;
-    width: 250px;
-    margin-right: 5px;
-}
-
-#searchBtn, #geolocateBtn {
-    padding: 8px;
-    cursor: pointer;
-    background-color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-#map {
-    width: 100%;
-    height: 80vh;
-    margin-top: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-    </style>
     <header>
         <h1>Carte Interactive</h1>
         <input type="text" id="search" placeholder="Rechercher un lieu...">
