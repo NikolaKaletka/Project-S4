@@ -7,7 +7,7 @@ $host = '127.0.0.1';
 $dbname = 'PlanVoyages';
 $username = 'root'; 
 $password = 'rootroot'; 
-
+include 'header.php';
 // Variables pour afficher les messages
 $alertMessage = '';
 $alertClass = '';

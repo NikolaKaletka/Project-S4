@@ -1,0 +1,338 @@
+/* Styles pour la page chatbot */
+.chatbot-page {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-top: 80px;
+    padding-bottom: 50px;
+}
+
+.chatbot-info {
+    padding: 30px;
+    height: 100%;
+}
+
+.chatbot-info h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+}
+
+.chatbot-info .lead {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    color: #555;
+}
+
+.chatbot-features {
+    margin-top: 40px;
+}
+
+.feature-item {
+    display: flex;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-right: 20px;
+    min-width: 50px;
+    text-align: center;
+}
+
+.feature-text h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+.feature-text p {
+    color: #666;
+}
+
+/* Conteneur du chatbot */
+.chatbot-container {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    max-height: 80vh;
+}
+
+.chatbot-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.chatbot-avatar {
+    font-size: 2rem;
+    margin-right: 15px;
+}
+
+.chatbot-title h2 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.chatbot-title p {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.chatbot-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    border-radius: 20px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.message.bot {
+    background-color: #e6e6e6;
+    color: var(--text-color);
+    border-top-left-radius: 5px;
+    align-self: flex-start;
+}
+
+.message.user {
+    background-color: var(--primary-color);
+    color: white;
+    border-top-right-radius: 5px;
+    align-self: flex-end;
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    margin-right: 10px;
+    font-size: 1rem;
+}
+
+.chatbot-input input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.btn-send {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-send:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+/* Styles pour les cartes de destination dans le chat */
+.destinations-recommendations {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.destination-card-chat {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.destination-card-chat:hover {
+    transform: translateY(-5px);
+}
+
+.destination-card-chat h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: var(--dark-color);
+}
+
+.destination-card-chat p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.destination-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+}
+
+.destination-details span {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.destination-details i {
+    margin-right: 5px;
+    color: var(--primary-color);
+}
+
+.destination-activities {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.destination-card-chat .btn {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+}
+
+/* Animation de typing pour le chatbot */
+.typing {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.typing-dots {
+    display: flex;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #aaa;
+    margin-right: 4px;
+    animation: typingAnimation 1.5s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 1s;
+    margin-right: 0;
+}
+
+@keyframes typingAnimation {
+    0% {
+        transform: translateY(0px);
+        background-color: #aaa;
+    }
+    50% {
+        transform: translateY(-5px);
+        background-color: var(--primary-color);
+    }
+    100% {
+        transform: translateY(0px);
+        background-color: #aaa;
+    }
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .chatbot-page {
+        padding-top: 60px;
+    }
+    
+    .chatbot-info {
+        margin-bottom: 30px;
+    }
+    
+    .chatbot-container {
+        height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .feature-item {
+        margin-bottom: 20px;
+    }
+    
+    .feature-icon {
+        font-size: 1.5rem;
+        min-width: 40px;
+    }
+    
+    .feature-text h3 {
+        font-size: 1.1rem;
+    }
+    
+    .chatbot-container {
+        height: 450px;
+    }
+}
+
+@media (max-width: 576px) {
+    .chatbot-info h1 {
+        font-size: 2rem;
+    }
+    
+    .chatbot-info .lead {
+        font-size: 1rem;
+    }
+    
+    .chatbot-header {
+        padding: 10px 15px;
+    }
+    
+    .chatbot-avatar {
+        font-size: 1.5rem;
+    }
+    
+    .chatbot-title h2 {
+        font-size: 1.1rem;
+    }
+    
+    .message {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+}

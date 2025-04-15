@@ -5,7 +5,7 @@ $serveur = "127.0.0.1";
 $utilisateur = "root";  
 $motDePasse = "rootroot";  
 $baseDeDonnees = "PlanVoyages";
-
+include 'header.php';
 $conn = new mysqli($serveur, $utilisateur, $motDePasse, $baseDeDonnees);
 
 // Vérifier la connexion
@@ -61,6 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Fermer la connexion
 $conn->close();
+
 ?>
 
 
@@ -99,3 +100,4 @@ $conn->close();
     </section>
 </body>
 </html>
+

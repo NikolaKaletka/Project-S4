@@ -6,7 +6,7 @@ $serveur = "127.0.0.1";
 $utilisateur = "root";
 $motDePasse = "rootroot";
 $baseDeDonnees = "PlanVoyages";
-
+include 'header.php';
 $conn = new mysqli($serveur, $utilisateur, $motDePasse, $baseDeDonnees);
 if ($conn->connect_error) {
     die("Connexion échouée : " . $conn->connect_error);
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['email'] = $email;
 
             // Rediriger vers la page de profil
-            header("Location: profil.php");
+            header("Location: mesvoyages.php");
             exit();
         } else {
             $erreur = "Mot de passe incorrect.";
@@ -59,19 +59,7 @@ $conn->close();
 <body>
     <section>
         <img src="static/bg.webp" class="bg">
-        <header>
-        <nav class="navbar">
-            <div class="container-fluid">
-                <div class="navbar-collapse">
-                    <div class="navbar-menu">
-                        <a class="nav-link" href="avis.php">Avis</a>
-                        <a class="nav-link" href="#">Contact</a>
-                        
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
+        
         <div class="Bienvenue">
             <h2> <em>Accéder à mon voyage</em> </h2>
             <form action="" method="POST">
