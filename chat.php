@@ -35,7 +35,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                         </li>
                         <?php if ($est_connecte): ?>
                             <li class="nav-item">
-                                <a class="nav-link" href="mesvoyages">Mon Profil</a>
+                                <a class="nav-link" href="mesvoyages.php">Mon Profil</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="logout.php">Déconnexion</a>
