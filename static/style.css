@@ -3,47 +3,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  
-}
-.navbar {
-  position: fixed;
-  top: -5px;
-  left: 0;
-  right: 0;
-  padding: 10px 20px;
-  z-index: 1000;
-}
 
-.navbar-menu {
-  display: flex;
-  align-items: center;
-  gap: 20px; 
-  justify-content: flex-end;  /* Alignement à droite */
 }
-
-.navbar-menu .menu-toggle {
-  display: none; 
-}
-
-.navbar-menu a{
-  font-size: 1.1rem;
-  font-family:  'Courier New', Courier, monospace;
-  color:#000000f0;
-  background-color: #e3af10;;
-  padding: 0.8rem 1rem;
-  text-align: center;
-  border-radius: 40px;
-  text-decoration: none;
-  border: 2px solid #e3af10(28, 105, 183); /* Bordure toujours visible */
-  outline: none;
-  transition: transform 0.2s ease-in-out; /* Ajout de la transition */
-}
-
-.navbar-menu a:hover {
-  transform: translateY(-3px); /* Déplace légèrement vers le haut */
-  background-color: #e3af10;
-  color: rgb(247, 247, 247);
-}
+/* Navbar styles moved to global.css for consistency */
 /* Style pour les alertes */
 .alert {
   padding: 10px;
@@ -75,7 +37,7 @@ section .bg {
   padding: 60px;
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(15px);
-  border: 1px solid #fff;
+  border: 1px solid var(--light-color);
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   border-right: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 20px;
@@ -83,7 +45,7 @@ section .bg {
   display: flex;
   flex-direction: column;
   gap: 30px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 25px 50px var(--shadow-color);
 }
 
 .Bienvenue h2 {
@@ -92,7 +54,7 @@ section .bg {
   text-align: center;
   font-size: 2.5em;
   font-weight: 600;
-  color: #040404;
+  color: var(--dark-color);
   margin-bottom: 10px;
 }
 
@@ -106,22 +68,22 @@ section .bg {
   padding: 15px 20px;
   outline: none;
   font-size: 1.25em;
-  color: #040404;
+  color: var(--dark-color);
   border-radius: 5px;
-  background: #fff;
+  background: var(--light-color);
   border: none;
   margin-bottom: 30px;
 }
 
 .Bienvenue .inputBox ::placeholder {
-  color: #464646;
+  color: var(--text-light);
 }
 
 .Bienvenue.inputBox #btn {
   position: relative;
   border: none;
   outline: none;
-  color: #fff;
+  color: var(--light-color);
   cursor: pointer;
   font-size: 1.25em;
   font-weight: 500;
@@ -129,7 +91,7 @@ section .bg {
 }
 
 .Bienvenue .inputBox #btn:hover {
-  background: #e3af10;
+  background: var(--primary-color);
 }
 .Bienvenue .groupe {
   display: flex;
@@ -138,7 +100,7 @@ section .bg {
 }
 .Bienvenue .groupe a {
   font-size: 1.25em;
-  color: #292727;
+  color: var(--text-color);
   font-weight: 500;
   text-decoration: none;
   min-width: 150px; 

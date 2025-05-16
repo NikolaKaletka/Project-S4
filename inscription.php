@@ -2,53 +2,38 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Connexion à la base de données
-$host = '127.0.0.1'; 
-$dbname = 'PlanVoyages';
-$username = 'root'; 
-$password = 'rootroot'; 
 include 'header.php';
+require_once 'utils/utils.php';
+
 // Variables pour afficher les messages
 $alertMessage = '';
 $alertClass = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $alertMessage = "✅ Connexion réussie à la base de données !";
-    $alertClass = "success";
-} catch (PDOException $e) {
-    $alertMessage = "Erreur de connexion : " . $e->getMessage();
-    $alertClass = "error";
-}
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $alertMessage = "⚠️ Formulaire soumis !";
     $alertClass = "info"; // Classe d'information
-    
+
     // Récupérer les données du formulaire
     $nom_utilisateur = trim($_POST['nom_utilisateur']);
     $email = trim($_POST['email']);
     $mot_de_passe = password_hash($_POST['mot_de_passe'], PASSWORD_DEFAULT); // Hachage du mot de passe
 
     // Vérifier si l'email existe déjà
-    $stmt = $pdo->prepare("SELECT id_utilisateur FROM Utilisateur WHERE email = :email");
-    $stmt->execute(['email' => $email]);
+    $user_exists = fetchValue("SELECT COUNT(*) FROM Utilisateur WHERE email = ?", [$email]);
 
-    if ($stmt->rowCount() > 0) {
-        $alertMessage = "";
+    if ($user_exists > 0) {
+        $alertMessage = "Cet email est déjà utilisé.";
         $alertClass = "error"; // Classe d'erreur
     } else {
-        // Insérer l'utilisateur dans la base de données
-        $sql = "INSERT INTO Utilisateur (nom, email, mot_de_passe) VALUES (:nom, :email, :mot_de_passe)";
-        $stmt = $pdo->prepare($sql);
-        
-        // Exécuter la requête
-        if ($stmt->execute(['nom' => $nom_utilisateur, 'email' => $email, 'mot_de_passe' => $mot_de_passe])) {
-            $alertMessage = "✅ Inscription réussie ! <a href='login.php'>Connectez-vous ici</a>";
+        try {
+            // Insérer l'utilisateur dans la base de données
+            $user_id = insert("INSERT INTO Utilisateur (nom, email, mot_de_passe) VALUES (?, ?, ?)", 
+                [$nom_utilisateur, $email, $mot_de_passe]);
+
+            $alertMessage = "✅ Inscription réussie ! <a href='pageconnexion.php'>Connectez-vous ici</a>";
             $alertClass = "success"; // Classe de succès
-        } else {
+        } catch (Exception $e) {
             $alertMessage = "⚠️ Erreur lors de l'inscription.";
             $alertClass = "error"; // Classe d'erreur
         }

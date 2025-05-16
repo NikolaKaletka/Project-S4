@@ -1,17 +1,11 @@
 <?php
 
-// Connexion à la base de données
-$serveur = "127.0.0.1"; 
-$utilisateur = "root";  
-$motDePasse = "rootroot";  
-$baseDeDonnees = "PlanVoyages";
 include 'header.php';
-$conn = new mysqli($serveur, $utilisateur, $motDePasse, $baseDeDonnees);
+require_once 'utils/utils.php';
 
-// Vérifier la connexion
-if ($conn->connect_error) {
-    die("❌ Connexion échouée : " . $conn->connect_error);
-}
+// Variables pour les messages
+$message = '';
+$message_type = '';
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -20,47 +14,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nouveau_mdp = trim($_POST["nouveau_mdp"]);
     $confirm_mdp = trim($_POST["confirm_mdp"]);
 
-    echo "🔍 Email reçu : " . htmlspecialchars($email) . "<br>";
-
     // Vérifier que les mots de passe correspondent
     if ($nouveau_mdp !== $confirm_mdp) {
-        die("❌ Les mots de passe ne correspondent pas.");
-    }
-
-    // Vérifier si l'email existe
-    $stmt = $conn->prepare("SELECT id_utilisateur FROM Utilisateur WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
-        // L'email existe
-        $stmt->bind_result($id_utilisateur);
-        $stmt->fetch();
-        $stmt->close();
-        echo "✅ Email trouvé, ID utilisateur : $id_utilisateur <br>";
-
-        // Hash du mot de passe
-        $mdp_hash = password_hash($nouveau_mdp, PASSWORD_DEFAULT);
-        echo "🔑 Hash généré : $mdp_hash <br>";
-
-        // Mise à jour du mot de passe
-        $stmt = $conn->prepare("UPDATE Utilisateur SET mot_de_passe = ? WHERE id_utilisateur = ?");
-        $stmt->bind_param("si", $mdp_hash, $id_utilisateur);
-
-        if ($stmt->execute()) {
-            echo "✅ Mot de passe mis à jour avec succès.";
-        } else {
-            echo "❌ Erreur SQL lors de la mise à jour : " . $stmt->error;
-        }
-        $stmt->close();
+        $message = "❌ Les mots de passe ne correspondent pas.";
+        $message_type = "error";
     } else {
-        echo "❌ Adresse email non trouvée.";
+        // Vérifier si l'email existe
+        $user = fetchOne("SELECT id_utilisateur FROM Utilisateur WHERE email = ?", [$email]);
+
+        if ($user) {
+            // L'email existe
+            $id_utilisateur = $user['id_utilisateur'];
+
+            // Hash du mot de passe
+            $mdp_hash = password_hash($nouveau_mdp, PASSWORD_DEFAULT);
+
+            try {
+                // Mise à jour du mot de passe
+                $rows_affected = update("UPDATE Utilisateur SET mot_de_passe = ? WHERE id_utilisateur = ?", 
+                    [$mdp_hash, $id_utilisateur]);
+
+                if ($rows_affected > 0) {
+                    $message = "✅ Mot de passe mis à jour avec succès.";
+                    $message_type = "success";
+                } else {
+                    $message = "❓ Aucune modification n'a été effectuée.";
+                    $message_type = "warning";
+                }
+            } catch (Exception $e) {
+                $message = "❌ Erreur lors de la mise à jour du mot de passe.";
+                $message_type = "error";
+            }
+        } else {
+            $message = "❌ Adresse email non trouvée.";
+            $message_type = "error";
+        }
     }
 }
-
-// Fermer la connexion
-$conn->close();
 
 ?>
 
@@ -92,12 +82,16 @@ $conn->close();
                     <input type="submit" value="Enregistrer" id="btn">
                 </div>
             </form>
+            <?php if (!empty($message)): ?>
+                <div class="alert alert-<?php echo $message_type; ?>">
+                    <?php echo $message; ?>
+                </div>
+            <?php endif; ?>
             <div class="groupe">
 				<a href="pageconnexion.php" target="_blank">Se connecter</a>
 			</div>
         </div>
-        
+
     </section>
 </body>
 </html>
-

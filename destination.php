@@ -2,22 +2,20 @@
 // Définir les variables pour le header
 $page_title = "Destinations";
 $current_page = "destinations";
-$additional_css = ["static/accueil.css", "static/destinations.css"];
+$additional_css = ["static/map.css", "static/destinations.css"];
 
 // Inclure le header
 include 'header.php';
 
-// Connexion à la base de données
-$pdo = getDbConnection();
+// Inclure le fichier de base de données
+require_once 'utils/utils.php';
 
 // Récupérer la destination recherchée si elle existe
 $search_destination = isset($_GET['destination']) ? sanitize($_GET['destination']) : '';
 
 // Récupérer toutes les destinations (voyages uniques)
-$sql = "SELECT DISTINCT destination FROM Voyage";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$destinations = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$destinations = fetchAll("SELECT DISTINCT destination FROM Voyage");
+$destinations = array_column($destinations, 'destination');
 
 // Informations sur les destinations populaires
 $destinations_info = [
@@ -73,7 +71,7 @@ if (!empty($search_destination)) {
     $filtered_destinations = array_filter($default_destinations, function($dest) use ($search_destination) {
         return stripos($dest, $search_destination) !== false;
     });
-    
+
     if (!empty($filtered_destinations)) {
         $destinations_to_show = $filtered_destinations;
     } else {
@@ -84,7 +82,7 @@ if (!empty($search_destination)) {
 }
 ?>
 
-<div class="destinations-page">
+<div class="map-page">
     <div class="destinations-hero">
         <div class="hero-background">
             <img src="static/bg.webp" alt="Destinations de voyage" class="bg">
@@ -94,11 +92,14 @@ if (!empty($search_destination)) {
             <div class="hero-content text-center">
                 <h1>Explorez nos destinations</h1>
                 <p class="lead">Découvrez des lieux incroyables et planifiez votre prochain voyage</p>
-                
+
                 <div class="search-box">
-                    <form action="destinations.php" method="GET">
+                    <form action="destination.php" method="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Rechercher une destination..." name="destination" value="<?php echo $search_destination; ?>">
+                            <button class="btn btn-outline-primary" id="geolocateBtn" type="button">
+                                <i class="fas fa-map-marker-alt"></i> Destinations populaires
+                            </button>
                             <button class="btn btn-search" type="submit">
                                 <i class="fas fa-search"></i> Rechercher
                             </button>
@@ -155,7 +156,7 @@ if (!empty($search_destination)) {
             <div class="destination-details mt-5">
                 <h2>À propos de <?php echo reset($destinations_to_show); ?></h2>
                 <?php $selected_destination = reset($destinations_to_show); ?>
-                
+
                 <div class="row mt-4">
                     <div class="col-md-6">
                         <div class="detail-card">
@@ -172,7 +173,7 @@ if (!empty($search_destination)) {
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="detail-card mt-4">
                     <h3><i class="fas fa-list"></i> Activités recommandées</h3>
                     <ul class="activities-list">
@@ -181,9 +182,9 @@ if (!empty($search_destination)) {
                         <?php endforeach; ?>
                     </ul>
                 </div>
-                
+
                 <div class="text-center mt-4">
-                    <?php if ($est_connecte): ?>
+                    <?php if (isUserLoggedIn()): ?>
                         <a href="lister.php?new=1&destination=<?php echo urlencode($selected_destination); ?>" class="btn btn-primary">
                             <i class="fas fa-plane"></i> Planifier un voyage à <?php echo $selected_destination; ?>
                         </a>
@@ -198,19 +199,17 @@ if (!empty($search_destination)) {
     </div>
 </div>
 
-<?php
-// Variables pour le footer
-$additional_js = [];
-$custom_script = "
+<!-- Custom JavaScript for Animations -->
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         // Animation au défilement
         const cards = document.querySelectorAll('.destination-card');
-        
+
         function checkScroll() {
             cards.forEach((card, index) => {
                 const cardTop = card.getBoundingClientRect().top;
                 const windowHeight = window.innerHeight;
-                
+
                 if (cardTop < windowHeight * 0.9) {
                     setTimeout(() => {
                         card.classList.add('visible');
@@ -218,13 +217,38 @@ $custom_script = "
                 }
             });
         }
-        
+
         window.addEventListener('scroll', checkScroll);
         checkScroll(); // Vérifier au chargement initial
     });
-";
+</script>
 
+<?php
 // Inclure le footer
 include 'footer.php';
 ?>
 
+<script>
+    // Add functionality for the "Destinations populaires" button
+    document.addEventListener('DOMContentLoaded', function() {
+        const popularBtn = document.getElementById('geolocateBtn');
+        if (popularBtn) {
+            popularBtn.addEventListener('click', function() {
+                // Redirect to the page without search parameters to show all popular destinations
+                window.location.href = 'destination.php';
+            });
+        }
+
+        // Add animations similar to map.php
+        const checkScroll = function() {
+            const heroContent = document.querySelector('.hero-content');
+            if (heroContent) {
+                heroContent.classList.add('visible');
+            }
+        };
+
+        window.addEventListener('scroll', checkScroll);
+        // Check on initial load
+        checkScroll();
+    });
+</script>

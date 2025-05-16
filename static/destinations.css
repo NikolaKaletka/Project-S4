@@ -1,94 +1,8 @@
 /* Styles pour la page destinations */
-.destinations-page {
-    min-height: 100vh;
-}
-
-.destinations-hero {
-    position: relative;
-    height: 50vh;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--light-color);
-    overflow: hidden;
-}
-
-.hero-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-.hero-background img.bg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.hero-background .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.7));
-}
-
-.hero-content h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.hero-content .lead {
-    font-size: 1.3rem;
-    margin-bottom: 30px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.search-box {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 50px;
-    padding: 8px;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.search-box .form-control {
-    border: none;
-    border-radius: 50px;
-    padding: 15px 25px;
-    font-size: 1.1rem;
-    background-color: transparent;
-}
-
-.search-box .form-control:focus {
-    box-shadow: none;
-}
-
-.btn-search {
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 50px;
-    padding: 12px 30px;
-    font-weight: 600;
-    border: none;
-}
-
-.btn-search:hover {
-    background-color: var(--accent-color);
-}
+/* Hero section styles are now inherited from map.css */
 
 .search-results {
-    background-color: #f8f9fa;
+    background-color: var(--gray-light);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 30px;
@@ -172,14 +86,14 @@
 }
 
 .destination-info p {
-    color: #666;
+    color: var(--text-light);
     margin-bottom: 15px;
 }
 
 .destination-meta {
     display: flex;
     justify-content: space-between;
-    color: #888;
+    color: var(--text-lighter);
     font-size: 0.9rem;
 }
 
@@ -209,7 +123,7 @@
 }
 
 .detail-card {
-    background-color: #f8f9fa;
+    background-color: var(--gray-light);
     border-radius: 10px;
     padding: 20px;
     height: 100%;
@@ -239,15 +153,15 @@
 }
 
 .activities-list li {
-    background-color: white;
+    background-color: var(--light-color);
     padding: 8px 15px;
     border-radius: 20px;
     font-size: 0.9rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 .need-inspiration {
-    background-color: #f0f8ff;
+    background-color: var(--primary-lighter);
     border-radius: 15px;
     padding: 40px;
     margin-top: 50px;
@@ -261,7 +175,7 @@
 }
 
 .need-inspiration p {
-    color: #666;
+    color: var(--text-light);
     margin-bottom: 20px;
     max-width: 600px;
     margin-left: auto;
@@ -273,11 +187,11 @@
     .hero-content h1 {
         font-size: 2.5rem;
     }
-    
+
     .hero-content .lead {
         font-size: 1.1rem;
     }
-    
+
     .search-results {
         flex-direction: column;
         align-items: flex-start;
@@ -289,11 +203,11 @@
     .destinations-hero {
         height: 40vh;
     }
-    
+
     .hero-content h1 {
         font-size: 2rem;
     }
-    
+
     .destination-meta {
         flex-direction: column;
         gap: 5px;
@@ -304,23 +218,23 @@
     .hero-content h1 {
         font-size: 1.8rem;
     }
-    
+
     .search-box {
         padding: 5px;
     }
-    
+
     .search-box .form-control {
         padding: 10px 15px;
     }
-    
+
     .btn-search {
         padding: 8px 15px;
     }
-    
+
     .destination-details h2 {
         font-size: 1.5rem;
     }
-    
+
     .need-inspiration {
         padding: 20px;
     }

@@ -1,15 +1,5 @@
 /* Styles généraux */
-:root {
-    --primary-color: #e3af10;
-    --secondary-color: #543699;
-    --accent-color: #f75e43;
-    --text-color: #333;
-    --light-color: #fff;
-    --dark-color: #222;
-    --gray-color: #f5f5f5;
-    --border-color: #e0e0e0;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-}
+/* Utilise les variables définies dans global.css */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -389,7 +379,7 @@ section.visible {
 }
 
 .message.bot {
-    background-color: #e6e6e6;
+    background-color: red;
     color: var(--text-color);
     border-top-left-radius: 5px;
     align-self: flex-start;
@@ -612,20 +602,20 @@ section.visible {
     .hero-content h1 {
         font-size: 2.8rem;
     }
-    
+
     .hero-content .lead {
         font-size: 1.2rem;
     }
-    
+
     .section-title {
         font-size: 2.2rem;
     }
-    
+
     .chatbot-section .section-title,
     .chatbot-section .section-description {
         text-align: center;
     }
-    
+
     .chatbot-preview {
         margin-top: 40px;
     }
@@ -635,27 +625,27 @@ section.visible {
     .hero {
         min-height: 500px;
     }
-    
+
     .hero-content h1 {
         font-size: 2.2rem;
     }
-    
+
     .hero-buttons .btn {
         margin: 5px;
     }
-    
+
     .section-title {
         font-size: 2rem;
     }
-    
+
     .footer {
         text-align: center;
     }
-    
+
     .social-links {
         justify-content: center;
     }
-    
+
     .contact-info li {
         justify-content: center;
     }
@@ -665,19 +655,19 @@ section.visible {
     .hero-content h1 {
         font-size: 1.8rem;
     }
-    
+
     .search-box {
         border-radius: 25px;
     }
-    
+
     .search-box .form-control {
         padding: 10px 15px;
     }
-    
+
     .btn-search {
         padding: 8px 15px;
     }
-    
+
     .hero-buttons .btn {
         padding: 8px 20px;
         font-size: 0.9rem;

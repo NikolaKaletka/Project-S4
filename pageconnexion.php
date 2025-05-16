@@ -1,16 +1,7 @@
 <?php
-session_start();
 
-// Connexion à la base de données
-$serveur = "127.0.0.1";
-$utilisateur = "root";
-$motDePasse = "rootroot";
-$baseDeDonnees = "PlanVoyages";
 include 'header.php';
-$conn = new mysqli($serveur, $utilisateur, $motDePasse, $baseDeDonnees);
-if ($conn->connect_error) {
-    die("Connexion échouée : " . $conn->connect_error);
-}
+require_once 'utils/utils.php';
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -18,20 +9,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mot_de_passe = $_POST["mot_de_passe"];
 
     // Vérifier l'utilisateur dans la base de données
-    $stmt = $conn->prepare("SELECT id_utilisateur, nom, mot_de_passe FROM Utilisateur WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
+    $user = fetchOne("SELECT id_utilisateur, nom, mot_de_passe FROM Utilisateur WHERE email = ?", [$email]);
 
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id_utilisateur, $nom, $hashed_password);
-        $stmt->fetch();
-
+    if ($user) {
         // Vérifier le mot de passe
-        if (password_verify($mot_de_passe, $hashed_password)) {
+        if (password_verify($mot_de_passe, $user['mot_de_passe'])) {
             // Stocker les informations de l'utilisateur en session
-            $_SESSION['id_utilisateur'] = $id_utilisateur;
-            $_SESSION['nom_utilisateur'] = $nom;
+            $_SESSION['id_utilisateur'] = $user['id_utilisateur'];
+            $_SESSION['nom_utilisateur'] = $user['nom'];
             $_SESSION['email'] = $email;
 
             // Rediriger vers la page de profil
@@ -43,9 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $erreur = "Email non trouvé.";
     }
-    $stmt->close();
 }
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +42,7 @@ $conn->close();
 <body>
     <section>
         <img src="static/bg.webp" class="bg">
-        
+
         <div class="Bienvenue">
             <h2> <em>Accéder à mon voyage</em> </h2>
             <form action="" method="POST">

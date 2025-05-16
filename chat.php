@@ -15,134 +15,50 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
     <!-- Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="static/global.css">
     <link rel="stylesheet" href="static/style.css">
-    <link rel="stylesheet" href="static/accueil.css">
     <link rel="stylesheet" href="static/chatbot.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .chatbot-page {
+            min-height: 100vh;
+            padding: 0;
+            background-color: transparent;
+        }
+        .chatbot-container {
+            height: 100vh;
+            max-height: 100vh;
+            border-radius: 0;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <header>
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="index.php">TravelDream</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="destination.php">Accueil</a>
-                        </li>
-                        <?php if ($est_connecte): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="mesvoyages.php">Mon Profil</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="logout.php">Déconnexion</a>
-                            </li>
-                        <?php else: ?>
-                            <li class="nav-item">
-                                <a class="nav-link btn-connexion" href="pageconnexion.php">Connexion</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link btn-inscription" href="inscription.php">Inscription</a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <div class="chatbot-avatar">
+                <i class="fas fa-robot"></i>
             </div>
-        </nav>
-    </header>
+            <div class="chatbot-title">
+                <h2>TravelDream Assistant</h2>
+                <p>En ligne</p>
+            </div>
+        </div>
 
-    <div class="chatbot-page">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-5">
-                    <div class="chatbot-info">
-                        <h1>Assistant de Voyage</h1>
-                        <p class="lead">Notre assistant intelligent vous aide à trouver la destination parfaite selon vos préférences et votre budget.</p> 
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-7">
-                    <div class="chatbot-container">
-                        <div class="chatbot-header">
-                            <div class="chatbot-avatar">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="chatbot-title">
-                                <h2>TravelDream Assistant</h2>
-                                <p>En ligne</p>
-                            </div>
-                        </div>
-                        
-                        <div class="chatbot-messages" id="chatMessages">
-                            <!-- Les messages seront ajoutés ici dynamiquement -->
-                        </div>
-                        
-                        <div class="chatbot-input">
-                            <input type="text" id="userInput" placeholder="Écrivez votre message..." autocomplete="off">
-                            <button id="sendButton" class="btn-send">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="chatbot-messages" id="chatMessages">
+            <!-- Les messages seront ajoutés ici dynamiquement -->
+        </div>
+
+        <div class="chatbot-input">
+            <input type="text" id="userInput" placeholder="Écrivez votre message..." autocomplete="off">
+            <button id="sendButton" class="btn-send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h3>TravelDream</h3>
-                    <p>Votre compagnon de voyage idéal pour planifier des aventures inoubliables.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-pinterest"></i></a>
-                    </div>
-                </div>
-                
-                <div class="col-md-2">
-                    <h4>Liens utiles</h4>
-                    <ul class="footer-links">
-                        <li><a href="index.php">Accueil</a></li>
-                        <li><a href="destinations.php">Destinations</a></li>
-                        <li><a href="avis.php">Avis</a></li>
-                        <li><a href="map.php">Carte</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-md-3">
-                    <h4>Assistance</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Centre d'aide</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Conditions d'utilisation</a></li>
-                        <li><a href="#">Politique de confidentialité</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-md-3">
-                    <h4>Contact</h4>
-                    <ul class="contact-info">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Rue du Voyage, Paris</li>
-                        <li><i class="fas fa-phone"></i> +33 1 23 45 67 89</li>
-                        <li><i class="fas fa-envelope"></i> contact@traveldream.com</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 TravelDream. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
 
     <!-- Scripts JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -300,14 +216,14 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
             const chatMessages = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
-            
+
             if (isDestination) {
                 // Format spécial pour les recommandations de destinations
                 messageDiv.innerHTML = text;
             } else {
                 messageDiv.textContent = text;
             }
-            
+
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -335,19 +251,19 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
         function recommanderDestinations(preferences) {
             // Filtrer les destinations selon les préférences
             let resultats = [...destinations];
-            
+
             // Filtrer par continent si spécifié
             if (preferences.continent && preferences.continent !== 'tous') {
                 resultats = resultats.filter(d => d.continent.toLowerCase() === preferences.continent.toLowerCase());
             }
-            
+
             // Filtrer par type de voyage
             if (preferences.type && preferences.type.length > 0) {
                 resultats = resultats.filter(d => {
                     return preferences.type.some(t => d.type.includes(t.toLowerCase()));
                 });
             }
-            
+
             // Filtrer par budget
             if (preferences.budget) {
                 resultats = resultats.filter(d => {
@@ -360,17 +276,17 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                     }
                 });
             }
-            
+
             // Filtrer par climat
             if (preferences.climat && preferences.climat.length > 0) {
                 resultats = resultats.filter(d => {
                     return preferences.climat.some(c => d.climat.includes(c.toLowerCase()));
                 });
             }
-            
+
             // Limiter à 3 résultats maximum
             resultats = resultats.slice(0, 3);
-            
+
             return resultats;
         }
 
@@ -398,7 +314,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
         // Fonction pour traiter la réponse de l'utilisateur
         function processUserInput(input) {
             input = input.trim().toLowerCase();
-            
+
             switch(chatbotState.step) {
                 case 0: // Continent
                     const continents = ["europe", "asie", "afrique", "amérique du nord", "amérique du sud", "océanie", "tous"];
@@ -412,12 +328,12 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                         addMessage('bot', "Je n'ai pas compris votre choix de continent. Veuillez choisir parmi Europe, Asie, Afrique, Amérique du Nord, Amérique du Sud, Océanie, ou 'tous'.");
                     }
                     break;
-                    
+
                 case 1: // Type de voyage
                     const types = ["ville", "plage", "nature", "culture", "aventure", "détente", "gastronomie", "romantique"];
                     const userTypes = input.split(',').map(t => t.trim());
                     const validTypes = userTypes.filter(t => types.includes(t));
-                    
+
                     if (validTypes.length > 0) {
                         chatbotState.preferences.type = validTypes;
                         chatbotState.step++;
@@ -428,7 +344,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                         addMessage('bot', "Je n'ai pas reconnu les types de voyage. Veuillez choisir parmi ville, plage, nature, culture, aventure, détente, gastronomie, romantique (vous pouvez en sélectionner plusieurs en les séparant par des virgules).");
                     }
                     break;
-                    
+
                 case 2: // Budget
                     const budgets = ["économique", "moyen", "élevé"];
                     if (budgets.includes(input)) {
@@ -441,12 +357,12 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                         addMessage('bot', "Je n'ai pas compris votre budget. Veuillez choisir parmi économique, moyen, ou élevé.");
                     }
                     break;
-                    
+
                 case 3: // Climat
                     const climats = ["tropical", "méditerranéen", "tempéré", "désertique", "montagneux"];
                     const userClimats = input.split(',').map(c => c.trim());
                     const validClimats = userClimats.filter(c => climats.includes(c));
-                    
+
                     if (validClimats.length > 0) {
                         chatbotState.preferences.climat = validClimats;
                         chatbotState.step++;
@@ -457,30 +373,30 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                         addMessage('bot', "Je n'ai pas reconnu les climats. Veuillez choisir parmi tropical, méditerranéen, tempéré, désertique, montagneux (vous pouvez en sélectionner plusieurs en les séparant par des virgules).");
                     }
                     break;
-                    
+
                 case 4: // Durée
                     const durees = ["week-end", "une semaine", "deux semaines", "plus"];
                     if (durees.includes(input)) {
                         chatbotState.preferences.duree = input;
                         chatbotState.step++;
-                        
+
                         // Générer les recommandations
                         setTimeout(() => {
                             addMessage('bot', "Merci pour vos réponses ! Voici les destinations que je vous recommande :");
-                            
+
                             const recommandations = recommanderDestinations(chatbotState.preferences);
-                            
+
                             if (recommandations.length > 0) {
                                 let htmlContent = '<div class="destinations-recommendations">';
                                 recommandations.forEach(dest => {
                                     htmlContent += formatDestination(dest);
                                 });
                                 htmlContent += '</div>';
-                                
+
                                 setTimeout(() => {
                                     addMessage('bot', htmlContent, true);
                                 }, 500);
-                                
+
                                 setTimeout(() => {
                                     addMessage('bot', "Ces destinations vous plaisent-elles ? Vous pouvez me poser des questions spécifiques sur ces lieux ou recommencer la recherche en tapant 'recommencer'.");
                                 }, 1000);
@@ -492,7 +408,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                         addMessage('bot', "Je n'ai pas compris votre choix de durée. Veuillez choisir parmi week-end, une semaine, deux semaines, ou plus.");
                     }
                     break;
-                    
+
                 default:
                     // Traitement des questions après les recommandations
                     if (input === "recommencer") {
@@ -515,7 +431,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                         // Recherche de mots-clés dans la question
                         const destinationsNoms = destinations.map(d => d.nom.toLowerCase());
                         const mentionnedDestination = destinationsNoms.find(nom => input.includes(nom.toLowerCase()));
-                        
+
                         if (mentionnedDestination) {
                             const destination = destinations.find(d => d.nom.toLowerCase() === mentionnedDestination);
                             addMessage('bot', `${destination.nom} est une destination ${destination.type.join(', ')} située en ${destination.pays}. ${destination.description} La meilleure période pour y aller est ${destination.saison.join(' ou ')} et le budget est généralement ${destination.budget}.`);
@@ -538,11 +454,11 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
             setTimeout(() => {
                 addMessage('bot', chatbotQuestions[0]);
             }, 500);
-            
+
             // Gestion de l'envoi de messages
             const userInput = document.getElementById('userInput');
             const sendButton = document.getElementById('sendButton');
-            
+
             function sendMessage() {
                 const message = userInput.value.trim();
                 if (message) {
@@ -551,9 +467,9 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
                     processUserInput(message);
                 }
             }
-            
+
             sendButton.addEventListener('click', sendMessage);
-            
+
             userInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     sendMessage();

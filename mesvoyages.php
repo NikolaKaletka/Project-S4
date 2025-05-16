@@ -2,57 +2,36 @@
 // Définir les variables pour le header
 $page_title = "Mes Voyages";
 $current_page = "mesvoyages";
-$additional_css = ["static/style.css", "static/profil_new.css"];
+$additional_css = ["static/map.css", "static/style.css", "static/profil_new.css"];
 
 // Inclure le header
 include 'header.php';
+require_once 'utils/utils.php';
 
 // Vérifier si l'utilisateur est connecté
-if (!$est_connecte) {
-    echo '<div class="container mt-5 pt-5">';
-    echo generateAlert("Vous devez être connecté pour accéder à cette page.", "warning");
-    echo '<div class="text-center"><a href="pageconnexion.php" class="btn btn-primary">Se connecter</a></div>';
-    echo '</div>';
-    
-    // Inclure le footer
-    $additional_js = [];
-    include 'footer.php';
+if (!isUserLoggedIn()) {
+    header("Location: pageconnexion.php");
     exit();
 }
-
-// Connexion à la base de données
-$pdo = getDbConnection();
 
 // Récupérer l'ID de l'utilisateur
 $id_utilisateur = $_SESSION['id_utilisateur'];
 
 // Récupérer les informations de l'utilisateur
-$sql = "SELECT nom, email FROM Utilisateur WHERE id_utilisateur = ?";
-$stmt = $pdo->prepare($sql);
-$stmt->execute([$id_utilisateur]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = fetchOne("SELECT nom, email FROM Utilisateur WHERE id_utilisateur = ?", [$id_utilisateur]);
 
 if (!$user) {
-    echo '<div class="container mt-5 pt-5">';
-    echo generateAlert("Utilisateur introuvable.", "danger");
-    echo '</div>';
-    
-    // Inclure le footer
-    $additional_js = [];
-    include 'footer.php';
+    header("Location: pageconnexion.php");
     exit();
 }
 
 // Récupérer les voyages de l'utilisateur
-$sql_voyages = "SELECT id_voyage, destination, date_debut, date_fin FROM Voyage WHERE ref_utilisateur = ? ORDER BY date_debut DESC";
-$stmt_voyages = $pdo->prepare($sql_voyages);
-$stmt_voyages->execute([$id_utilisateur]);
-$voyages = $stmt_voyages->fetchAll(PDO::FETCH_ASSOC);
+$voyages = fetchAll("SELECT id_voyage, destination, date_debut, date_fin FROM Voyage WHERE ref_utilisateur = ? ORDER BY date_debut DESC", [$id_utilisateur]);
 
 // Vérifier si un nouveau voyage doit être créé
 if (isset($_GET['new']) && $_GET['new'] == 1) {
     $destination = isset($_GET['destination']) ? sanitize($_GET['destination']) : '';
-    
+
     // Afficher le formulaire de création de voyage
     $show_form = true;
 } else {
@@ -64,36 +43,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_voyage'])) {
     $destination = sanitize($_POST['destination']);
     $date_debut = sanitize($_POST['date_debut']);
     $date_fin = sanitize($_POST['date_fin']);
-    
+
     // Validation des données
     $errors = [];
-    
+
     if (empty($destination)) {
         $errors[] = "La destination est requise.";
     }
-    
+
     if (empty($date_debut)) {
         $errors[] = "La date de départ est requise.";
     }
-    
+
     if (empty($date_fin)) {
         $errors[] = "La date de retour est requise.";
     }
-    
+
     if (strtotime($date_fin) < strtotime($date_debut)) {
         $errors[] = "La date de retour doit être postérieure à la date de départ.";
     }
-    
+
     // Si pas d'erreurs, créer le voyage
     if (empty($errors)) {
-        $sql_insert = "INSERT INTO Voyage (destination, date_debut, date_fin, ref_utilisateur) VALUES (?, ?, ?, ?)";
-        $stmt_insert = $pdo->prepare($sql_insert);
-        
-        if ($stmt_insert->execute([$destination, $date_debut, $date_fin, $id_utilisateur])) {
+        try {
+            $voyage_id = insert("INSERT INTO Voyage (destination, date_debut, date_fin, ref_utilisateur) VALUES (?, ?, ?, ?)", 
+                [$destination, $date_debut, $date_fin, $id_utilisateur]);
+
             // Rediriger vers la page des voyages
             header("Location: lister.php?success=1");
             exit();
-        } else {
+        } catch (Exception $e) {
             $errors[] = "Une erreur est survenue lors de la création du voyage.";
         }
     }
@@ -106,7 +85,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 }
 ?>
 
-<div class="content-page">
+<div class="map-page content-page">
     <div class="container py-5">
         <div class="row">
             <div class="col-lg-4 mb-4">
@@ -117,7 +96,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                         </div>
                         <h2><?php echo htmlspecialchars($user['nom']); ?></h2>
                         <p class="text-muted"><?php echo htmlspecialchars($user['email']); ?></p>
-                        
+
                         <div class="profile-stats">
                             <div class="stat-item">
                                 <div class="stat-value"><?php echo count($voyages); ?></div>
@@ -128,15 +107,15 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                 <div class="stat-label">Destinations</div>
                             </div>
                         </div>
-                        
+
                         <div class="profile-actions mt-4">
-                            <a href="lister.php?new=1" class="btn btn-primary btn-sm">
+                            <a href="creation_voyage.php" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus"></i> Nouveau voyage
                             </a>
                         </div>
                     </div>
                 </div>
-                
+
                 <?php if (!empty($voyages)): ?>
                     <div class="content-container">
                         <h3>Statistiques</h3>
@@ -150,7 +129,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                 $interval = $start->diff($end);
                                 $total_days += $interval->days + 1; // +1 pour inclure le jour de départ
                             }
-                            
+
                             // Trouver le prochain voyage
                             $prochain_voyage = null;
                             $today = new DateTime();
@@ -163,7 +142,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                 }
                             }
                             ?>
-                            
+
                             <div class="stat-detail">
                                 <i class="fas fa-calendar-day"></i>
                                 <div>
@@ -171,7 +150,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                     <span class="stat-value"><?php echo $total_days; ?> jours</span>
                                 </div>
                             </div>
-                            
+
                             <?php if ($prochain_voyage): ?>
                                 <div class="stat-detail">
                                     <i class="fas fa-plane-departure"></i>
@@ -192,7 +171,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                     </div>
                 <?php endif; ?>
             </div>
-            
+
             <div class="col-lg-8">
                 <?php if (!empty($success_message)): ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -200,11 +179,11 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php endif; ?>
-                
+
                 <?php if ($show_form): ?>
                     <div class="content-container">
                         <h2>Créer un nouveau voyage</h2>
-                        
+
                         <?php if (!empty($errors)): ?>
                             <div class="alert alert-danger">
                                 <ul class="mb-0">
@@ -214,25 +193,25 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                 </ul>
                             </div>
                         <?php endif; ?>
-                        
+
                         <form action="lister.php" method="POST">
                             <div class="mb-3">
                                 <label for="destination" class="form-label">Destination</label>
                                 <input type="text" class="form-control" id="destination" name="destination" value="<?php echo isset($destination) ? htmlspecialchars($destination) : ''; ?>" required>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="date_debut" class="form-label">Date de départ</label>
                                     <input type="date" class="form-control" id="date_debut" name="date_debut" required>
                                 </div>
-                                
+
                                 <div class="col-md-6 mb-3">
                                     <label for="date_fin" class="form-label">Date de retour</label>
                                     <input type="date" class="form-control" id="date_fin" name="date_fin" required>
                                 </div>
                             </div>
-                            
+
                             <div class="d-flex justify-content-between">
                                 <a href="lister.php" class="btn btn-outline-secondary">Annuler</a>
                                 <button type="submit" name="create_voyage" class="btn btn-primary">Créer le voyage</button>
@@ -243,85 +222,169 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                     <div class="content-container">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h2 class="mb-0">Mes Voyages</h2>
-                            <a href="lister.php?new=1" class="btn btn-primary">
+                            <a href="creation_voyage.php" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Nouveau voyage
                             </a>
                         </div>
-                        
+
                         <?php if (empty($voyages)): ?>
                             <div class="empty-state">
                                 <i class="fas fa-suitcase-rolling"></i>
                                 <h3>Aucun voyage planifié</h3>
                                 <p>Commencez à planifier votre première aventure !</p>
-                                <a href="lister.php?new=1" class="btn btn-primary">Créer un voyage</a>
+                                <a href="creation_voyage.php" class="btn btn-primary">Créer un voyage</a>
                             </div>
                         <?php else: ?>
-                            <div class="voyages-list">
-                                <?php foreach ($voyages as $voyage): ?>
-                                    <div class="voyage-card">
-                                        <div class="voyage-header">
-                                            <h3><?php echo htmlspecialchars($voyage['destination']); ?></h3>
-                                            <?php
-                                            $start = new DateTime($voyage['date_debut']);
-                                            $end = new DateTime($voyage['date_fin']);
-                                            $interval = $start->diff($end);
-                                            $duration = $interval->days + 1; // +1 pour inclure le jour de départ
-                                            
-                                            $status_class = '';
-                                            $status_text = '';
-                                            $today = new DateTime();
-                                            
-                                            if ($today < $start) {
-                                                $status_class = 'upcoming';
-                                                $status_text = 'À venir';
-                                            } elseif ($today > $end) {
-                                                $status_class = 'completed';
-                                                $status_text = 'Terminé';
-                                            } else {
-                                                $status_class = 'ongoing';
-                                                $status_text = 'En cours';
-                                            }
-                                            ?>
-                                            <span class="voyage-status <?php echo $status_class; ?>"><?php echo $status_text; ?></span>
-                                        </div>
-                                        
-                                        <div class="voyage-dates">
-                                            <div class="date-item">
-                                                <i class="fas fa-plane-departure"></i>
-                                                <div>
-                                                    <span class="date-label">Départ</span>
-                                                    <span class="date-value"><?php echo formatDate($voyage['date_debut']); ?></span>
+                            <?php
+                            // Séparer les voyages en cours et les voyages passés/à venir
+                            $voyages_en_cours = [];
+                            $voyages_autres = [];
+
+                            foreach ($voyages as $voyage) {
+                                $start = new DateTime($voyage['date_debut']);
+                                $end = new DateTime($voyage['date_fin']);
+                                $today = new DateTime();
+
+                                if ($today >= $start && $today <= $end) {
+                                    $voyages_en_cours[] = $voyage;
+                                } else {
+                                    $voyages_autres[] = $voyage;
+                                }
+                            }
+                            ?>
+
+                            <!-- Voyages en cours -->
+                            <div class="voyage-section">
+                                <h3 class="section-title">Voyages en cours</h3>
+                                <div class="voyages-list">
+                                    <?php if (empty($voyages_en_cours)): ?>
+                                        <p class="text-muted">Aucun voyage en cours actuellement.</p>
+                                    <?php else: ?>
+                                        <?php foreach ($voyages_en_cours as $voyage): ?>
+                                            <div class="voyage-card">
+                                                <div class="voyage-header">
+                                                    <h3><?php echo htmlspecialchars($voyage['destination']); ?></h3>
+                                                    <span class="voyage-status ongoing">En cours</span>
+                                                </div>
+
+                                                <div class="voyage-dates">
+                                                    <div class="date-item">
+                                                        <i class="fas fa-plane-departure"></i>
+                                                        <div>
+                                                            <span class="date-label">Départ</span>
+                                                            <span class="date-value"><?php echo formatDate($voyage['date_debut']); ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="date-separator">
+                                                        <i class="fas fa-arrow-right"></i>
+                                                    </div>
+
+                                                    <div class="date-item">
+                                                        <i class="fas fa-plane-arrival"></i>
+                                                        <div>
+                                                            <span class="date-label">Retour</span>
+                                                            <span class="date-value"><?php echo formatDate($voyage['date_fin']); ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <?php
+                                                    $start = new DateTime($voyage['date_debut']);
+                                                    $end = new DateTime($voyage['date_fin']);
+                                                    $interval = $start->diff($end);
+                                                    $duration = $interval->days + 1; // +1 pour inclure le jour de départ
+                                                    ?>
+                                                    <div class="voyage-duration">
+                                                        <i class="fas fa-clock"></i>
+                                                        <span><?php echo $duration; ?> jours</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="voyage-actions">
+                                                    <a href="creation_voyage.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-edit"></i> Modifier
+                                                    </a>
+                                                    <a href="voyage_detail.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-list-check"></i> Détails
+                                                    </a>
                                                 </div>
                                             </div>
-                                            
-                                            <div class="date-separator">
-                                                <i class="fas fa-arrow-right"></i>
-                                            </div>
-                                            
-                                            <div class="date-item">
-                                                <i class="fas fa-plane-arrival"></i>
-                                                <div>
-                                                    <span class="date-label">Retour</span>
-                                                    <span class="date-value"><?php echo formatDate($voyage['date_fin']); ?></span>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <!-- Voyages passés ou à venir -->
+                            <div class="voyage-section mt-4">
+                                <h3 class="section-title">Voyages passés / à venir</h3>
+                                <div class="voyages-list">
+                                    <?php if (empty($voyages_autres)): ?>
+                                        <p class="text-muted">Aucun voyage passé ou à venir.</p>
+                                    <?php else: ?>
+                                        <?php foreach ($voyages_autres as $voyage): ?>
+                                            <div class="voyage-card">
+                                                <div class="voyage-header">
+                                                    <h3><?php echo htmlspecialchars($voyage['destination']); ?></h3>
+                                                    <?php
+                                                    $start = new DateTime($voyage['date_debut']);
+                                                    $end = new DateTime($voyage['date_fin']);
+                                                    $today = new DateTime();
+
+                                                    if ($today < $start) {
+                                                        $status_class = 'upcoming';
+                                                        $status_text = 'À venir';
+                                                    } else {
+                                                        $status_class = 'completed';
+                                                        $status_text = 'Terminé';
+                                                    }
+                                                    ?>
+                                                    <span class="voyage-status <?php echo $status_class; ?>"><?php echo $status_text; ?></span>
+                                                </div>
+
+                                                <div class="voyage-dates">
+                                                    <div class="date-item">
+                                                        <i class="fas fa-plane-departure"></i>
+                                                        <div>
+                                                            <span class="date-label">Départ</span>
+                                                            <span class="date-value"><?php echo formatDate($voyage['date_debut']); ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="date-separator">
+                                                        <i class="fas fa-arrow-right"></i>
+                                                    </div>
+
+                                                    <div class="date-item">
+                                                        <i class="fas fa-plane-arrival"></i>
+                                                        <div>
+                                                            <span class="date-label">Retour</span>
+                                                            <span class="date-value"><?php echo formatDate($voyage['date_fin']); ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <?php
+                                                    $interval = $start->diff($end);
+                                                    $duration = $interval->days + 1; // +1 pour inclure le jour de départ
+                                                    ?>
+                                                    <div class="voyage-duration">
+                                                        <i class="fas fa-clock"></i>
+                                                        <span><?php echo $duration; ?> jours</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="voyage-actions">
+                                                    <a href="creation_voyage.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-edit"></i> Modifier
+                                                    </a>
+                                                    <a href="voyage_detail.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-list-check"></i> Détails
+                                                    </a>
                                                 </div>
                                             </div>
-                                            
-                                            <div class="voyage-duration">
-                                                <i class="fas fa-clock"></i>
-                                                <span><?php echo $duration; ?> jours</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="voyage-actions">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-edit"></i> Modifier
-                                            </a>
-                                            <a href="#" class="btn btn-sm btn-outline-secondary">
-                                                <i class="fas fa-list-check"></i> Détails
-                                            </a>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -531,26 +594,38 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
     justify-content: flex-end;
 }
 
+.voyage-section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
 @media (max-width: 768px) {
     .voyage-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
-    
+
     .voyage-status {
         align-self: flex-start;
     }
-    
+
     .voyage-dates {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .date-separator {
         display: none;
     }
-    
+
     .voyage-duration {
         margin-left: 0;
         margin-top: 10px;
@@ -558,23 +633,21 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 }
 </style>
 
-<?php
-// Variables pour le footer
-$additional_js = [];
-$custom_script = "
+<!-- Custom JavaScript for Date Validation -->
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         // Définir la date minimale pour le champ date_debut (aujourd'hui)
         const dateDebutInput = document.getElementById('date_debut');
         const dateFinInput = document.getElementById('date_fin');
-        
+
         if (dateDebutInput && dateFinInput) {
             const today = new Date().toISOString().split('T')[0];
             dateDebutInput.setAttribute('min', today);
-            
+
             // Mettre à jour la date minimale pour date_fin lorsque date_debut change
             dateDebutInput.addEventListener('change', function() {
                 dateFinInput.setAttribute('min', this.value);
-                
+
                 // Si date_fin est antérieure à date_debut, la réinitialiser
                 if (dateFinInput.value && dateFinInput.value < this.value) {
                     dateFinInput.value = this.value;
@@ -582,8 +655,9 @@ $custom_script = "
             });
         }
     });
-";
+</script>
 
+<?php
 // Inclure le footer
 include 'footer.php';
 ?>

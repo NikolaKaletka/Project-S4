@@ -1,6 +1,6 @@
 /* Styles pour la page chatbot */
 .chatbot-page {
-    background-color: #f8f9fa;
+    background-color: var(--gray-light);
     min-height: 100vh;
     padding-top: 80px;
     padding-bottom: 50px;
@@ -21,7 +21,7 @@
 .chatbot-info .lead {
     font-size: 1.1rem;
     margin-bottom: 30px;
-    color: #555;
+    color: var(--text-light);
 }
 
 .chatbot-features {
@@ -54,14 +54,14 @@
 }
 
 .feature-text p {
-    color: #666;
+    color: var(--text-light);
 }
 
 /* Conteneur du chatbot */
 .chatbot-container {
-    background-color: white;
+    background-color: var(--light-color);
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px var(--shadow-color);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -97,7 +97,7 @@
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background-color: #f9f9f9;
+    background-color: var(--gray-color);
     display: flex;
     flex-direction: column;
 }
@@ -111,14 +111,14 @@
 }
 
 .message.bot {
-    background-color: #e6e6e6;
+    background-color: var(--primary-verylight);
     color: var(--text-color);
     border-top-left-radius: 5px;
     align-self: flex-start;
 }
 
 .message.user {
-    background-color: var(--primary-color);
+    background-color: var(--primary-dark);
     color: white;
     border-top-right-radius: 5px;
     align-self: flex-end;
@@ -173,10 +173,10 @@
 }
 
 .destination-card-chat {
-    background-color: white;
+    background-color: var(--light-color);
     border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 10px var(--shadow-color);
     transition: transform 0.3s ease;
 }
 
@@ -192,7 +192,7 @@
 
 .destination-card-chat p {
     font-size: 0.9rem;
-    color: #555;
+    color: var(--text-light);
     margin-bottom: 10px;
 }
 
@@ -205,7 +205,7 @@
 }
 
 .destination-details span {
-    background-color: #f0f0f0;
+    background-color: var(--gray-color);
     padding: 5px 10px;
     border-radius: 20px;
     display: flex;
@@ -220,7 +220,7 @@
 .destination-activities {
     font-size: 0.9rem;
     margin-bottom: 10px;
-    color: #666;
+    color: var(--text-light);
 }
 
 .destination-card-chat .btn {
@@ -243,7 +243,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: #aaa;
+    background-color: var(--text-lightest);
     margin-right: 4px;
     animation: typingAnimation 1.5s infinite ease-in-out;
 }
@@ -264,7 +264,7 @@
 @keyframes typingAnimation {
     0% {
         transform: translateY(0px);
-        background-color: #aaa;
+        background-color: var(--text-lightest);
     }
     50% {
         transform: translateY(-5px);
@@ -272,7 +272,7 @@
     }
     100% {
         transform: translateY(0px);
-        background-color: #aaa;
+        background-color: var(--text-lightest);
     }
 }
 
@@ -281,11 +281,11 @@
     .chatbot-page {
         padding-top: 60px;
     }
-    
+
     .chatbot-info {
         margin-bottom: 30px;
     }
-    
+
     .chatbot-container {
         height: 500px;
     }
@@ -295,16 +295,16 @@
     .feature-item {
         margin-bottom: 20px;
     }
-    
+
     .feature-icon {
         font-size: 1.5rem;
         min-width: 40px;
     }
-    
+
     .feature-text h3 {
         font-size: 1.1rem;
     }
-    
+
     .chatbot-container {
         height: 450px;
     }
@@ -314,23 +314,23 @@
     .chatbot-info h1 {
         font-size: 2rem;
     }
-    
+
     .chatbot-info .lead {
         font-size: 1rem;
     }
-    
+
     .chatbot-header {
         padding: 10px 15px;
     }
-    
+
     .chatbot-avatar {
         font-size: 1.5rem;
     }
-    
+
     .chatbot-title h2 {
         font-size: 1.1rem;
     }
-    
+
     .message {
         padding: 10px 12px;
         font-size: 0.9rem;
