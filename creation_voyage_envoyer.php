@@ -53,13 +53,13 @@ if (!$voyage_id) {
 // Traiter les données de la checklist
 if (isset($_POST['checklist']) && is_array($_POST['checklist'])) {
     // Supprimer les anciennes tâches pour ce voyage
-    executeQuery("DELETE FROM ItemChecklistAvantDepart WHERE ref_voyage = ?", [$voyage_id]);
+    executeQuery("DELETE FROM item_checklist_avant_depart WHERE ref_voyage = ?", [$voyage_id]);
 
     foreach ($_POST['checklist'] as $item) {
         if (!empty($item['description'])) {
             $est_fait = isset($item['est_fait']) ? 1 : 0;
 
-            insert("INSERT INTO ItemChecklistAvantDepart (description_tache, est_fait, ref_voyage) 
+            insert("INSERT INTO item_checklist_avant_depart (description_tache, est_fait, ref_voyage) 
                    VALUES (?, ?, ?)", 
                    [$item['description'], $est_fait, $voyage_id]);
         }
@@ -114,7 +114,7 @@ if (isset($_POST['logement']) && is_array($_POST['logement'])) {
 // Traiter les données de transport dans la ville
 if (isset($_POST['transport_ville']) && is_array($_POST['transport_ville'])) {
     // Supprimer les anciens transports dans la ville pour ce voyage
-  executeQuery("DELETE FROM TransportVille WHERE ref_voyage = ?", [$voyage_id]);
+  executeQuery("DELETE FROM transport_ville WHERE ref_voyage = ?", [$voyage_id]);
 
     foreach ($_POST['transport_ville'] as $item) {
         if (!empty($item['type']) || !empty($item['type_ticket'])) {
@@ -123,7 +123,7 @@ if (isset($_POST['transport_ville']) && is_array($_POST['transport_ville'])) {
             $lieu_achat = !empty($item['lieu_achat']) ? $item['lieu_achat'] : null;
             $informations = !empty($item['informations']) ? $item['informations'] : null;
 
-            insert("INSERT INTO TransportVille (type_billet, prix, place_achat_billet, informations, ref_voyage) 
+            insert("INSERT INTO transport_ville (type_billet, prix, place_achat_billet, informations, ref_voyage) 
                    VALUES (?, ?, ?, ?, ?)", 
                    [$type_billet, $prix, $lieu_achat, $informations, $voyage_id]);
         }

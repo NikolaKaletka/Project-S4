@@ -26,7 +26,7 @@ if ($voyage_id) {
     }
 
     // Récupérer les éléments de la checklist
-    $checklist_items = fetchAll("SELECT * FROM ItemChecklistAvantDepart WHERE ref_voyage = ?", [$voyage_id]);
+    $checklist_items = fetchAll("SELECT * FROM item_checklist_avant_depart WHERE ref_voyage = ?", [$voyage_id]);
 
     // Récupérer les transports
     $transport_items = fetchAll("SELECT * FROM Transport WHERE ref_voyage = ?", [$voyage_id]);
@@ -35,12 +35,12 @@ if ($voyage_id) {
     $logement_items = fetchAll("SELECT * FROM Logement WHERE ref_voyage = ?", [$voyage_id]);
 
     // Récupérer les transports dans la ville
-    $transport_ville_items = fetchAll("SELECT * FROM TransportVille WHERE ref_voyage = ?", [$voyage_id]);
+    $transport_ville_items = fetchAll("SELECT * FROM transport_ville WHERE ref_voyage = ?", [$voyage_id]);
 
     // Récupérer les activités
     $activite_items = fetchAll("SELECT a.*, t.nom as ticket_nom, t.prix as ticket_prix, t.place_achat_billet as ticket_lien 
                                FROM Activite a 
-                               LEFT JOIN TicketActivite t ON a.id_activite = t.ref_activite 
+                               LEFT JOIN ticket_activite t ON a.id_activite = t.ref_activite 
                                WHERE a.ref_voyage = ?", [$voyage_id]);
 
     // Récupérer les restaurants
@@ -285,9 +285,9 @@ $additional_css = ["static/style.css", "static/global.css"];
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="mb-0">Transports urbain</h3>
-                    <button type="button" class="btn btn-sm btn-primary" id="addTransportVille">Ajouter un transport</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="addtransport_ville">Ajouter un transport</button>
                 </div>
-                <div class="card-body" id="transportVilleContainer">
+                <div class="card-body" id="transport_villeContainer">
                     <?php if ($voyage_id && !empty($transport_ville_items)): ?>
                         <?php foreach ($transport_ville_items as $index => $item): ?>
                             <div class="transport-ville-item mb-4">
@@ -326,7 +326,7 @@ $additional_css = ["static/style.css", "static/global.css"];
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <div class="empty-state text-center py-4" id="emptyTransportVille">
+                        <div class="empty-state text-center py-4" id="emptytransport_ville">
                             <i class="fas fa-subway fa-3x text-muted mb-3"></i>
                             <h5>Pas de transports urbain</h5>
                             <p class="text-muted">Cliquez sur "Ajouter un transport" pour planifier vos déplacements en ville</p>
@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let checklistCounter = <?php echo !empty($checklist_items) ? count($checklist_items) : 0; ?>;
     let transportCounter = <?php echo !empty($transport_items) ? count($transport_items) : 0; ?>;
     let logementCounter = <?php echo !empty($logement_items) ? count($logement_items) : 0; ?>;
-    let transportVilleCounter = <?php echo !empty($transport_ville_items) ? count($transport_ville_items) : 0; ?>;
+    let transport_villeCounter = <?php echo !empty($transport_ville_items) ? count($transport_ville_items) : 0; ?>;
     let activiteCounter = <?php echo !empty($activite_items) ? count($activite_items) : 0; ?>;
     let restaurantCounter = <?php echo !empty($restaurant_items) ? count($restaurant_items) : 0; ?>;
         // No initialization needed as we're using PHP to render the form elements directly
@@ -662,20 +662,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 })();
             <?php endforeach; ?>
 
-    const transportVilleContainer = document.getElementById('transportVilleContainer');
-    const emptyTransportVille = document.getElementById('emptyTransportVille');
+    const transport_villeContainer = document.getElementById('transport_villeContainer');
+    const emptytransport_ville = document.getElementById('emptytransport_ville');
     // Initialiser les transports dans la ville
             <?php foreach ($transport_ville_items as $item): ?>
                 (function() {
-                    if (emptyTransportVille) {
-                        emptyTransportVille.style.display = 'none';
+                    if (emptytransport_ville) {
+                        emptytransport_ville.style.display = 'none';
                     }
 
-                    const transportVilleItem = document.createElement('div');
-                    transportVilleItem.className = 'transport-ville-item mb-4';
-                transportVilleItem.innerHTML = `
+                    const transport_villeItem = document.createElement('div');
+                    transport_villeItem.className = 'transport-ville-item mb-4';
+                transport_villeItem.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="transport-ville-title">Transport urbain ${transportVilleCounter + 1}</h4>
+                        <h4 class="transport-ville-title">Transport urbain ${transport_villeCounter + 1}</h4>
                         <div>
                             <button type="button" class="btn btn-sm btn-outline-secondary me-2 rename-transport-ville">Modifier le nom</button>
                             <button type="button" class="btn btn-sm btn-danger remove-item">Supprimer</button>
@@ -683,37 +683,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
 
                     <div class="mb-3">
-                        <label for="transport_ville_type_${transportVilleCounter}" class="form-label">Type de transport:</label>
-                        <input type="text" class="form-control" id="transport_ville_type_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][type]" placeholder="Ex: tram et bus, métro...">
+                        <label for="transport_ville_type_${transport_villeCounter}" class="form-label">Type de transport:</label>
+                        <input type="text" class="form-control" id="transport_ville_type_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][type]" placeholder="Ex: tram et bus, métro...">
                     </div>
 
                     <div class="mb-3">
-                        <label for="transport_ville_ticket_${transportVilleCounter}" class="form-label">Type de ticket:</label>
-                        <input type="text" class="form-control" id="transport_ville_ticket_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][type_ticket]" placeholder="Ex: 1 jour ticket, 90 minutes ticket..." value="<?php echo htmlspecialchars($item['type_billet'] ?? ''); ?>">
+                        <label for="transport_ville_ticket_${transport_villeCounter}" class="form-label">Type de ticket:</label>
+                        <input type="text" class="form-control" id="transport_ville_ticket_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][type_ticket]" placeholder="Ex: 1 jour ticket, 90 minutes ticket..." value="<?php echo htmlspecialchars($item['type_billet'] ?? ''); ?>">
                     </div>
 
                     <div class="mb-3">
-                        <label for="transport_ville_prix_${transportVilleCounter}" class="form-label">Prix:</label>
-                        <input type="text" class="form-control" id="transport_ville_prix_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][prix]" value="<?php echo $item['prix'] ?? ''; ?>">
+                        <label for="transport_ville_prix_${transport_villeCounter}" class="form-label">Prix:</label>
+                        <input type="text" class="form-control" id="transport_ville_prix_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][prix]" value="<?php echo $item['prix'] ?? ''; ?>">
                     </div>
 
                     <div class="mb-3">
-                        <label for="transport_ville_info_${transportVilleCounter}" class="form-label">Informations:</label>
-                        <input type="text" class="form-control" id="transport_ville_info_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][informations]" placeholder="Ex: ticket pour les 1-3 zones sans aéroport..." value="<?php echo htmlspecialchars($item['informations'] ?? ''); ?>">
+                        <label for="transport_ville_info_${transport_villeCounter}" class="form-label">Informations:</label>
+                        <input type="text" class="form-control" id="transport_ville_info_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][informations]" placeholder="Ex: ticket pour les 1-3 zones sans aéroport..." value="<?php echo htmlspecialchars($item['informations'] ?? ''); ?>">
                     </div>
 
                     <div class="mb-3">
-                        <label for="transport_ville_achat_${transportVilleCounter}" class="form-label">Lieu d'achat:</label>
-                        <input type="text" class="form-control" id="transport_ville_achat_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][lieu_achat]" value="<?php echo htmlspecialchars($item['place_achat_billet'] ?? ''); ?>">
+                        <label for="transport_ville_achat_${transport_villeCounter}" class="form-label">Lieu d'achat:</label>
+                        <input type="text" class="form-control" id="transport_ville_achat_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][lieu_achat]" value="<?php echo htmlspecialchars($item['place_achat_billet'] ?? ''); ?>">
                     </div>
                 `;
-                transportVilleContainer.appendChild(transportVilleItem);
+                transport_villeContainer.appendChild(transport_villeItem);
 
                 // Ajouter les événements
-                addRemoveEvent(transportVilleItem.querySelector('.remove-item'));
-                addRenameEvent(transportVilleItem.querySelector('.rename-transport-ville'), transportVilleItem.querySelector('.transport-ville-title'));
+                addRemoveEvent(transport_villeItem.querySelector('.remove-item'));
+                addRenameEvent(transport_villeItem.querySelector('.rename-transport-ville'), transport_villeItem.querySelector('.transport-ville-title'));
 
-                transportVilleCounter++;
+                transport_villeCounter++;
                 })();
             <?php endforeach; ?>
     const activiteContainer = document.getElementById('activiteContainer');
@@ -1058,19 +1058,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Fonction pour ajouter un transport dans la ville
-    document.getElementById('addTransportVille').addEventListener('click', function() {
+    document.getElementById('addtransport_ville').addEventListener('click', function() {
         // Masquer le message "Pas de transport urbain"
-        const emptyState = document.getElementById('emptyTransportVille');
+        const emptyState = document.getElementById('emptytransport_ville');
         if (emptyState) {
             emptyState.style.display = 'none';
         }
 
-        let container = document.getElementById('transportVilleContainer');
+        let container = document.getElementById('transport_villeContainer');
         const newItem = document.createElement('div');
         newItem.className = 'transport-ville-item mb-4';
         newItem.innerHTML = `
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="transport-ville-title">Transport urbain ${transportVilleCounter + 1}</h4>
+                <h4 class="transport-ville-title">Transport urbain ${transport_villeCounter + 1}</h4>
                 <div>
                     <button type="button" class="btn btn-sm btn-outline-secondary me-2 rename-transport-ville">Modifier le nom</button>
                     <button type="button" class="btn btn-sm btn-danger remove-item">Supprimer</button>
@@ -1078,32 +1078,32 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <div class="mb-3">
-                <label for="transport_ville_type_${transportVilleCounter}" class="form-label">Type de transport:</label>
-                <input type="text" class="form-control" id="transport_ville_type_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][type]" placeholder="Ex: tram et bus, métro...">
+                <label for="transport_ville_type_${transport_villeCounter}" class="form-label">Type de transport:</label>
+                <input type="text" class="form-control" id="transport_ville_type_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][type]" placeholder="Ex: tram et bus, métro...">
             </div>
 
             <div class="mb-3">
-                <label for="transport_ville_ticket_${transportVilleCounter}" class="form-label">Type de ticket:</label>
-                <input type="text" class="form-control" id="transport_ville_ticket_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][type_ticket]" placeholder="Ex: 1 jour ticket, 90 minutes ticket...">
+                <label for="transport_ville_ticket_${transport_villeCounter}" class="form-label">Type de ticket:</label>
+                <input type="text" class="form-control" id="transport_ville_ticket_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][type_ticket]" placeholder="Ex: 1 jour ticket, 90 minutes ticket...">
             </div>
 
             <div class="mb-3">
-                <label for="transport_ville_prix_${transportVilleCounter}" class="form-label">Prix:</label>
-                <input type="text" class="form-control" id="transport_ville_prix_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][prix]">
+                <label for="transport_ville_prix_${transport_villeCounter}" class="form-label">Prix:</label>
+                <input type="text" class="form-control" id="transport_ville_prix_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][prix]">
             </div>
 
             <div class="mb-3">
-                <label for="transport_ville_info_${transportVilleCounter}" class="form-label">Informations:</label>
-                <input type="text" class="form-control" id="transport_ville_info_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][informations]" placeholder="Ex: ticket pour les 1-3 zones sans aéroport...">
+                <label for="transport_ville_info_${transport_villeCounter}" class="form-label">Informations:</label>
+                <input type="text" class="form-control" id="transport_ville_info_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][informations]" placeholder="Ex: ticket pour les 1-3 zones sans aéroport...">
             </div>
 
             <div class="mb-3">
-                <label for="transport_ville_achat_${transportVilleCounter}" class="form-label">Lieu d'achat:</label>
-                <input type="text" class="form-control" id="transport_ville_achat_${transportVilleCounter}" name="transport_ville[${transportVilleCounter}][lieu_achat]">
+                <label for="transport_ville_achat_${transport_villeCounter}" class="form-label">Lieu d'achat:</label>
+                <input type="text" class="form-control" id="transport_ville_achat_${transport_villeCounter}" name="transport_ville[${transport_villeCounter}][lieu_achat]">
             </div>
         `;
         container.appendChild(newItem);
-        transportVilleCounter++;
+        transport_villeCounter++;
 
         // Ajouter les événements
         addRemoveEvent(newItem.querySelector('.remove-item'));
@@ -1252,8 +1252,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('emptyTransport').style.display = 'block';
                 } else if (container.id === 'logementContainer') {
                     document.getElementById('emptyHebergement').style.display = 'block';
-                } else if (container.id === 'transportVilleContainer') {
-                    document.getElementById('emptyTransportVille').style.display = 'block';
+                } else if (container.id === 'transport_villeContainer') {
+                    document.getElementById('emptytransport_ville').style.display = 'block';
                 } else if (container.id === 'activiteContainer') {
                     document.getElementById('emptyActivite').style.display = 'block';
                 } else if (container.id === 'restaurantContainer') {

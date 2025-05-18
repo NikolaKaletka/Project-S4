@@ -1,13 +1,22 @@
 <?php
+// Démarrer la session si elle n'est pas déjà démarrée
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Définir les variables pour le header
 $page_title = "Détails du Voyage";
 $additional_css = ["static/style.css", "static/global.css"];
 
-// Inclure le header
-include 'header.php';
-
 // Inclure le fichier de base de données
 require_once 'utils/utils.php';
+
+// Vérifier si l'utilisateur est connecté
+if (!isUserLoggedIn()) {
+    // L'utilisateur n'est pas connecté, rediriger vers la page de connexion
+    header("Location: pageconnexion.php");
+    exit();
+}
 
 // Récupérer l'ID de l'utilisateur
 $id_utilisateur = $_SESSION['id_utilisateur'];
@@ -21,14 +30,24 @@ if (!$voyage_id) {
     exit();
 }
 
-$voyage = fetchOne("SELECT * FROM Voyage WHERE id_voyage = ? AND ref_utilisateur = ?", [$voyage_id, $id_utilisateur]);
+// Inclure le header
+include 'header.php';
+
+// Vérifier si le voyage existe et appartient à l'utilisateur ou est partagé avec lui
+$voyage = fetchOne("SELECT v.*, 
+                   CASE WHEN v.ref_utilisateur = ? THEN 1 ELSE 0 END AS is_owner 
+                   FROM Voyage v 
+                   LEFT JOIN voyage_partage vp ON v.id_voyage = vp.id_voyage AND vp.id_utilisateur = ?
+                   WHERE v.id_voyage = ? AND (v.ref_utilisateur = ? OR vp.id_utilisateur = ?)", 
+                   [$id_utilisateur, $id_utilisateur, $voyage_id, $id_utilisateur, $id_utilisateur]);
+
 if (!$voyage) {
     header("Location: mesvoyages.php");
     exit();
 }
 
 // Récupérer les éléments de la checklist
-$checklist_items = fetchAll("SELECT * FROM ItemChecklistAvantDepart WHERE ref_voyage = ?", [$voyage_id]);
+$checklist_items = fetchAll("SELECT * FROM item_checklist_avant_depart WHERE ref_voyage = ?", [$voyage_id]);
 
 // Récupérer les transports
 $transport_items = fetchAll("SELECT * FROM Transport WHERE ref_voyage = ?", [$voyage_id]);
@@ -37,12 +56,12 @@ $transport_items = fetchAll("SELECT * FROM Transport WHERE ref_voyage = ?", [$vo
 $logement_items = fetchAll("SELECT * FROM Logement WHERE ref_voyage = ?", [$voyage_id]);
 
 // Récupérer les transports dans la ville
-$transport_ville_items = fetchAll("SELECT * FROM TransportVille WHERE ref_voyage = ?", [$voyage_id]);
+$transport_ville_items = fetchAll("SELECT * FROM transport_ville WHERE ref_voyage = ?", [$voyage_id]);
 
 // Récupérer les activités
 $activite_items = fetchAll("SELECT a.*, t.nom as ticket_nom, t.prix as ticket_prix, t.place_achat_billet as ticket_lien 
                            FROM Activite a 
-                           LEFT JOIN TicketActivite t ON a.id_activite = t.ref_activite 
+                           LEFT JOIN ticket_activite t ON a.id_activite = t.ref_activite 
                            WHERE a.ref_voyage = ?", [$voyage_id]);
 
 // Récupérer les restaurants
@@ -108,6 +127,11 @@ $duree_voyage = $interval->days + 1; // +1 pour inclure le jour de départ
                             <a href="creation_voyage.php?id=<?php echo $voyage_id; ?>" class="btn btn-primary">
                                 <i class="fas fa-edit"></i> Modifier
                             </a>
+                            <?php if ($voyage['is_owner']): ?>
+                            <a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#shareModal">
+                                <i class="fas fa-share-alt"></i> Partager
+                            </a>
+                            <?php endif; ?>
                             <a href="#" class="btn btn-outline-primary" onclick="window.print()">
                                 <i class="fas fa-print"></i> Imprimer
                             </a>
@@ -384,7 +408,7 @@ $duree_voyage = $interval->days + 1; // +1 pour inclure le jour de départ
                                     </div>
                                 </div>
                                 <?php endif; ?>
-                                
+
                                 <?php if ($item['avec_ticket'] === 'oui'): ?>
                                 <div class="ticket-info mt-3">
                                     <h5><i class="fas fa-ticket-alt"></i> Informations sur le billet</h5>
@@ -483,6 +507,112 @@ $duree_voyage = $interval->days + 1; // +1 pour inclure le jour de départ
 </div>
 </div>
 
+<!-- Modal de partage -->
+<?php if ($voyage['is_owner']): ?>
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Partager le voyage</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Sélectionnez les utilisateurs avec qui vous souhaitez partager ce voyage :</p>
+                <form id="shareForm">
+                    <input type="hidden" name="voyage_id" id="share_voyage_id" value="<?php echo $voyage_id; ?>">
+                    <div class="user-list" id="userListContainer">
+                        <p class="text-center"><i class="fas fa-spinner fa-spin"></i> Chargement des utilisateurs...</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="shareButton">Partager</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour gérer le partage -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shareModal = document.getElementById('shareModal');
+    const shareVoyageIdInput = document.getElementById('share_voyage_id');
+    const userListContainer = document.getElementById('userListContainer');
+    const shareButton = document.getElementById('shareButton');
+    const shareForm = document.getElementById('shareForm');
+
+    // Charger la liste des utilisateurs lorsque le modal est ouvert
+    shareModal.addEventListener('show.bs.modal', function() {
+        const voyageId = shareVoyageIdInput.value;
+
+        // Charger la liste des utilisateurs
+        fetch(`get_users.php?id=${voyageId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let html = '';
+                    if (data.users.length === 0) {
+                        html = '<p class="text-muted">Aucun utilisateur disponible pour le partage.</p>';
+                    } else {
+                        data.users.forEach(user => {
+                            const isChecked = data.shared_users.includes(user.id_utilisateur) ? 'checked' : '';
+                            html += `
+                                <div class="form-check user-item">
+                                    <input class="form-check-input" type="checkbox" name="users[]" 
+                                           value="${user.id_utilisateur}" 
+                                           id="user${user.id_utilisateur}"
+                                           ${isChecked}>
+                                    <label class="form-check-label" for="user${user.id_utilisateur}">
+                                        <strong>${user.nom}</strong>
+                                        <span class="text-muted">${user.email}</span>
+                                    </label>
+                                </div>
+                            `;
+                        });
+                    }
+                    userListContainer.innerHTML = html;
+                } else {
+                    userListContainer.innerHTML = `<p class="text-danger">${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                userListContainer.innerHTML = '<p class="text-danger">Une erreur est survenue lors du chargement des utilisateurs.</p>';
+            });
+    });
+
+    // Lorsque le bouton "Partager" est cliqué, envoyer les données au serveur
+    shareButton.addEventListener('click', function() {
+        const formData = new FormData(shareForm);
+
+        // Créer une requête AJAX
+        fetch('share_voyage.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Fermer le modal
+                const modal = bootstrap.Modal.getInstance(shareModal);
+                modal.hide();
+
+                // Afficher un message de succès
+                alert('Le voyage a été partagé avec succès !');
+            } else {
+                alert('Erreur : ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors du partage du voyage.');
+        });
+    });
+});
+</script>
+<?php endif; ?>
+
 <style>
 /* Styles spécifiques à la page de détail du voyage */
 .detail-section {
@@ -579,33 +709,62 @@ $duree_voyage = $interval->days + 1; // +1 pour inclure le jour de départ
     color: var(--primary-color);
 }
 
+/* Styles pour le modal de partage */
+.user-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.user-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.user-item label {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.user-item .text-muted {
+    font-size: 0.85rem;
+}
+
 @media print {
     .navbar, .footer, .btn {
         display: none !important;
     }
-    
+
     body {
         padding: 0;
         margin: 0;
     }
-    
+
     .container {
         width: 100%;
         max-width: 100%;
         padding: 0;
         margin: 0;
     }
-    
+
     .content-container {
         box-shadow: none;
         border: none;
     }
-    
+
     .card {
         box-shadow: none;
         border: 1px solid #ddd;
     }
-    
+
     .section-title {
         color: #000;
         border-bottom-color: #000;

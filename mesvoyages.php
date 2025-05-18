@@ -25,8 +25,15 @@ if (!$user) {
     exit();
 }
 
-// Récupérer les voyages de l'utilisateur
-$voyages = fetchAll("SELECT id_voyage, destination, date_debut, date_fin FROM Voyage WHERE ref_utilisateur = ? ORDER BY date_debut DESC", [$id_utilisateur]);
+// Récupérer les voyages de l'utilisateur (créés par lui et partagés avec lui)
+$voyages = fetchAll("SELECT v.id_voyage, v.destination, v.date_debut, v.date_fin, 
+                    CASE WHEN v.ref_utilisateur = ? THEN 0 ELSE 1 END AS is_shared,
+                    CASE WHEN v.ref_utilisateur = ? THEN 1 ELSE 0 END AS is_owner
+                    FROM Voyage v 
+                    LEFT JOIN voyage_partage vp ON v.id_voyage = vp.id_voyage 
+                    WHERE v.ref_utilisateur = ? OR vp.id_utilisateur = ? 
+                    ORDER BY v.date_debut DESC", 
+                    [$id_utilisateur, $id_utilisateur, $id_utilisateur, $id_utilisateur]);
 
 // Vérifier si un nouveau voyage doit être créé
 if (isset($_GET['new']) && $_GET['new'] == 1) {
@@ -263,7 +270,12 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                         <?php foreach ($voyages_en_cours as $voyage): ?>
                                             <div class="voyage-card">
                                                 <div class="voyage-header">
-                                                    <h3><?php echo htmlspecialchars($voyage['destination']); ?></h3>
+                                                    <h3>
+                                                        <?php echo htmlspecialchars($voyage['destination']); ?>
+                                                        <?php if ($voyage['is_shared']): ?>
+                                                            <span class="shared-icon" title="Voyage partagé avec vous"><i class="fas fa-share-alt"></i></span>
+                                                        <?php endif; ?>
+                                                    </h3>
                                                     <span class="voyage-status ongoing">En cours</span>
                                                 </div>
 
@@ -304,6 +316,11 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                                     <a href="creation_voyage.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-primary">
                                                         <i class="fas fa-edit"></i> Modifier
                                                     </a>
+                                                    <?php if ($voyage['is_owner']): ?>
+                                                    <a href="#" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#shareModal" data-voyage-id="<?php echo $voyage['id_voyage']; ?>">
+                                                        <i class="fas fa-share-alt"></i> Partager
+                                                    </a>
+                                                    <?php endif; ?>
                                                     <a href="voyage_detail.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-secondary">
                                                         <i class="fas fa-list-check"></i> Détails
                                                     </a>
@@ -324,7 +341,12 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                         <?php foreach ($voyages_autres as $voyage): ?>
                                             <div class="voyage-card">
                                                 <div class="voyage-header">
-                                                    <h3><?php echo htmlspecialchars($voyage['destination']); ?></h3>
+                                                    <h3>
+                                                        <?php echo htmlspecialchars($voyage['destination']); ?>
+                                                        <?php if ($voyage['is_shared']): ?>
+                                                            <span class="shared-icon" title="Voyage partagé avec vous"><i class="fas fa-share-alt"></i></span>
+                                                        <?php endif; ?>
+                                                    </h3>
                                                     <?php
                                                     $start = new DateTime($voyage['date_debut']);
                                                     $end = new DateTime($voyage['date_fin']);
@@ -376,6 +398,11 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                                                     <a href="creation_voyage.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-primary">
                                                         <i class="fas fa-edit"></i> Modifier
                                                     </a>
+                                                    <?php if ($voyage['is_owner']): ?>
+                                                    <a href="#" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#shareModal" data-voyage-id="<?php echo $voyage['id_voyage']; ?>">
+                                                        <i class="fas fa-share-alt"></i> Partager
+                                                    </a>
+                                                    <?php endif; ?>
                                                     <a href="voyage_detail.php?id=<?php echo $voyage['id_voyage']; ?>" class="btn btn-sm btn-outline-secondary">
                                                         <i class="fas fa-list-check"></i> Détails
                                                     </a>
@@ -606,6 +633,20 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
     color: var(--primary-color);
 }
 
+.shared-icon {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.8rem;
+    color: #0d6efd;
+    background-color: #e3f2fd;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    vertical-align: middle;
+}
+
 @media (max-width: 768px) {
     .voyage-header {
         flex-direction: column;
@@ -633,7 +674,32 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 }
 </style>
 
-<!-- Custom JavaScript for Date Validation -->
+<!-- Modal de partage -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Partager le voyage</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Sélectionnez les utilisateurs avec qui vous souhaitez partager ce voyage :</p>
+                <form id="shareForm">
+                    <input type="hidden" name="voyage_id" id="share_voyage_id" value="">
+                    <div class="user-list" id="userListContainer">
+                        <p class="text-center"><i class="fas fa-spinner fa-spin"></i> Chargement des utilisateurs...</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="shareButton">Partager</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom JavaScript for Date Validation and Share Modal -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Définir la date minimale pour le champ date_debut (aujourd'hui)
@@ -654,6 +720,83 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                 }
             });
         }
+
+        // Gestion du modal de partage
+        const shareModal = document.getElementById('shareModal');
+        const shareVoyageIdInput = document.getElementById('share_voyage_id');
+        const userListContainer = document.getElementById('userListContainer');
+        const shareButton = document.getElementById('shareButton');
+        const shareForm = document.getElementById('shareForm');
+
+        // Lorsque le modal est ouvert, récupérer l'ID du voyage et charger les utilisateurs
+        shareModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const voyageId = button.getAttribute('data-voyage-id');
+            shareVoyageIdInput.value = voyageId;
+
+            // Charger la liste des utilisateurs
+            fetch(`get_users.php?id=${voyageId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let html = '';
+                        if (data.users.length === 0) {
+                            html = '<p class="text-muted">Aucun utilisateur disponible pour le partage.</p>';
+                        } else {
+                            data.users.forEach(user => {
+                                const isChecked = data.shared_users.includes(user.id_utilisateur) ? 'checked' : '';
+                                html += `
+                                    <div class="form-check user-item">
+                                        <input class="form-check-input" type="checkbox" name="users[]" 
+                                               value="${user.id_utilisateur}" 
+                                               id="user${user.id_utilisateur}"
+                                               ${isChecked}>
+                                        <label class="form-check-label" for="user${user.id_utilisateur}">
+                                            <strong>${user.nom}</strong>
+                                            <span class="text-muted">${user.email}</span>
+                                        </label>
+                                    </div>
+                                `;
+                            });
+                        }
+                        userListContainer.innerHTML = html;
+                    } else {
+                        userListContainer.innerHTML = `<p class="text-danger">${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    userListContainer.innerHTML = '<p class="text-danger">Une erreur est survenue lors du chargement des utilisateurs.</p>';
+                });
+        });
+
+        // Lorsque le bouton "Partager" est cliqué, envoyer les données au serveur
+        shareButton.addEventListener('click', function() {
+            const formData = new FormData(shareForm);
+
+            // Créer une requête AJAX
+            fetch('share_voyage.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Fermer le modal
+                    const modal = bootstrap.Modal.getInstance(shareModal);
+                    modal.hide();
+
+                    // Afficher un message de succès
+                    alert('Le voyage a été partagé avec succès !');
+                } else {
+                    alert('Erreur : ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors du partage du voyage.');
+            });
+        });
     });
 </script>
 
