@@ -20,42 +20,42 @@ $destinations = array_column($destinations, 'destination');
 // Informations sur les destinations populaires
 $destinations_info = [
     'Paris' => [
-        'image' => 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a',
+        'image' => 'static/paris.png',
         'description' => 'La ville de l\'amour avec ses monuments emblématiques, sa gastronomie et son ambiance romantique.',
         'activites' => ['Tour Eiffel', 'Musée du Louvre', 'Montmartre', 'Croisière sur la Seine', 'Shopping'],
         'meilleure_periode' => 'Printemps et automne',
         'budget' => 'Moyen à élevé'
     ],
     'Rome' => [
-        'image' => 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9',
+        'image' => 'static/rome.png',
         'description' => 'La cité éternelle regorge de trésors historiques, d\'art et d\'une cuisine délicieuse.',
         'activites' => ['Colisée', 'Vatican', 'Fontaine de Trevi', 'Forum Romain', 'Dégustation de glaces'],
         'meilleure_periode' => 'Printemps et automne',
         'budget' => 'Moyen'
     ],
     'Bali' => [
-        'image' => 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad',
+        'image' => 'static/bali.png',
         'description' => 'L\'île des dieux offre un mélange parfait de plages paradisiaques, culture unique et nature luxuriante.',
         'activites' => ['Plages de Kuta', 'Temples de Ubud', 'Rizières en terrasse', 'Surf', 'Spa'],
         'meilleure_periode' => 'Avril à octobre',
         'budget' => 'Économique à moyen'
     ],
     'New York' => [
-        'image' => 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9',
+        'image' => 'static/newyork.png',
         'description' => 'La ville qui ne dort jamais vous impressionnera par ses gratte-ciels, sa diversité culturelle et son énergie.',
         'activites' => ['Times Square', 'Central Park', 'Empire State Building', 'Broadway', 'Musées'],
         'meilleure_periode' => 'Printemps et automne',
         'budget' => 'Élevé'
     ],
     'Tokyo' => [
-        'image' => 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26',
+        'image' => 'static/tokyo.png',
         'description' => 'Un fascinant mélange de tradition et d\'ultra-modernité, avec une culture unique et une cuisine raffinée.',
         'activites' => ['Shibuya', 'Temples d\'Asakusa', 'Akihabara', 'Parc Ueno', 'Cuisine japonaise'],
         'meilleure_periode' => 'Printemps et automne',
         'budget' => 'Élevé'
     ],
     'Barcelone' => [
-        'image' => 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4',
+        'image' => 'static/barcelone.png',
         'description' => 'Ville dynamique offrant architecture unique, plages urbaines et vie nocturne animée.',
         'activites' => ['Sagrada Familia', 'Parc Güell', 'Las Ramblas', 'Plage de Barceloneta', 'Tapas'],
         'meilleure_periode' => 'Printemps, été et automne',
