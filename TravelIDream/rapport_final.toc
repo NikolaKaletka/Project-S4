@@ -1,0 +1,98 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Contexte du projet}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Objectifs et problématique}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Méthodologie de travail}{3}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Analyse des Besoins}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Besoins fonctionnels}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Besoins non fonctionnels}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Spécificités techniques}{4}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Conception de la Base de Données}{5}{section.3}%
+\contentsline {section}{\numberline {4}Architecture Technique}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Structure du code}{5}{subsection.4.1}%
+\contentsline {paragraph}{Organisation générale}{5}{section*.2}%
+\contentsline {paragraph}{Gestion des sessions}{6}{section*.3}%
+\contentsline {paragraph}{Système de templates}{6}{section*.4}%
+\contentsline {subsection}{\numberline {4.2}Organisation des fichiers}{6}{subsection.4.2}%
+\contentsline {paragraph}{Fichiers PHP principaux (à la racine)}{6}{section*.5}%
+\contentsline {paragraph}{Dossier \texttt {config}}{7}{section*.6}%
+\contentsline {paragraph}{Dossier \texttt {utils}}{7}{section*.7}%
+\contentsline {paragraph}{Dossier \texttt {static} (pour les fichiers CSS, images, etc.)}{7}{section*.8}%
+\contentsline {subsection}{\numberline {4.3}Configuration du projet}{7}{subsection.4.3}%
+\contentsline {paragraph}{Configuration de la base de données}{7}{section*.9}%
+\contentsline {paragraph}{Fonctions utilitaires}{7}{section*.10}%
+\contentsline {subsection}{\numberline {4.4}Sécurité}{8}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Fonctionnalités}{8}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Authentification}{8}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Inscription}{8}{subsubsection.5.1.1}%
+\contentsline {paragraph}{Processus d'inscription}{8}{section*.11}%
+\contentsline {paragraph}{Sécurité}{8}{section*.12}%
+\contentsline {subsubsection}{\numberline {5.1.2}Connexion}{9}{subsubsection.5.1.2}%
+\contentsline {paragraph}{Processus de connexion}{9}{section*.13}%
+\contentsline {paragraph}{Gestion de session}{9}{section*.14}%
+\contentsline {subsubsection}{\numberline {5.1.3}Réinitialisation du mot de passe}{9}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Déconnexion}{9}{subsubsection.5.1.4}%
+\contentsline {paragraph}{Processus de déconnexion}{10}{section*.15}%
+\contentsline {paragraph}{Sécurité}{10}{section*.16}%
+\contentsline {subsection}{\numberline {5.2}Gestion des Voyages}{10}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Création et Modification d'un Voyage}{10}{subsubsection.5.2.1}%
+\contentsline {paragraph}{Interface de création/modification (\texttt {creation\_voyage.php})}{10}{section*.17}%
+\contentsline {paragraph}{Traitement du formulaire (\texttt {creation\_voyage\_envoyer.php})}{11}{section*.18}%
+\contentsline {subsubsection}{\numberline {5.2.2}Visualisation des voyages de l'utilisateur (\texttt {mesvoyages.php})}{11}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Visualisation Détaillée d'un Voyage (\texttt {voyage\_detail.php})}{11}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}Partage d'un Voyage}{12}{subsubsection.5.2.4}%
+\contentsline {paragraph}{Interface de partage}{12}{section*.19}%
+\contentsline {paragraph}{Traitement du partage (\texttt {share\_voyage.php})}{12}{section*.20}%
+\contentsline {subsection}{\numberline {5.3}Carte interactive}{12}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Assistant de voyage (chatbot)}{13}{subsection.5.4}%
+\contentsline {paragraph}{Fonctionnalités}{13}{section*.22}%
+\contentsline {paragraph}{Implémentation technique}{14}{section*.23}%
+\contentsline {subsection}{\numberline {5.5}Recherche de destinations (\texttt {destination.php})}{14}{subsection.5.5}%
+\contentsline {paragraph}{Fonctionnalités}{14}{section*.24}%
+\contentsline {paragraph}{Implémentation technique}{14}{section*.25}%
+\contentsline {section}{\numberline {6}Interface Utilisateur}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Charte graphique}{14}{subsection.6.1}%
+\contentsline {subsubsection}{\numberline {6.1.1}Palette de couleurs}{14}{subsubsection.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.2}Typographie}{15}{subsubsection.6.1.2}%
+\contentsline {paragraph}{Hiérarchie des tailles}{15}{section*.26}%
+\contentsline {subsubsection}{\numberline {6.1.3}Iconographie}{15}{subsubsection.6.1.3}%
+\contentsline {subsubsection}{\numberline {6.1.4}Éléments d’interface}{15}{subsubsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.2}Maquettes et wireframes}{15}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Responsive Design}{15}{subsection.6.3}%
+\contentsline {subsubsection}{\numberline {6.3.1}Adaptations spécifiques}{16}{subsubsection.6.3.1}%
+\contentsline {section}{\numberline {7}Tests et Validation}{16}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Stratégie de test}{16}{subsection.7.1}%
+\contentsline {subsubsection}{\numberline {7.1.1}Environnement de test}{16}{subsubsection.7.1.1}%
+\contentsline {subsubsection}{\numberline {7.1.2}Outils et méthodes}{16}{subsubsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.2}Tests fonctionnels}{16}{subsection.7.2}%
+\contentsline {section}{\numberline {8}Difficultés Rencontrées et Solutions}{17}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Problèmes techniques}{17}{subsection.8.1}%
+\contentsline {subsubsection}{\numberline {8.1.1}Compatibilité entre navigateurs}{17}{subsubsection.8.1.1}%
+\contentsline {subsubsection}{\numberline {8.1.2}Gestion dynamique des formulaires complexes}{17}{subsubsection.8.1.2}%
+\contentsline {subsubsection}{\numberline {8.1.3}Intégration des API externes (Leaflet/Nominatim)}{17}{subsubsection.8.1.3}%
+\contentsline {section}{\numberline {9}Améliorations Futures}{18}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Fonctionnalités à développer}{18}{subsection.9.1}%
+\contentsline {subsubsection}{\numberline {9.1.1}Application mobile native}{18}{subsubsection.9.1.1}%
+\contentsline {subsubsection}{\numberline {9.1.2}Amélioration des performances}{18}{subsubsection.9.1.2}%
+\contentsline {subsubsection}{\numberline {9.1.3}Renforcement de la sécurité}{18}{subsubsection.9.1.3}%
+\contentsline {subsubsection}{\numberline {9.1.4}Intelligence artificielle et personnalisation avancée}{18}{subsubsection.9.1.4}%
+\contentsline {section}{\numberline {10}Conclusion}{19}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Synthèse du projet}{19}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Compétences acquises}{19}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Perspectives}{20}{subsection.10.3}%
+\contentsline {section}{\numberline {11}ANNEXE : Schéma de bases de données}{21}{section.11}%
+\contentsline {section}{\numberline {12}ANNEXE : Lancement du projet}{22}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Authentification}{22}{subsection.12.1}%
+\contentsline {subsubsection}{\numberline {12.1.1}Inscription}{22}{subsubsection.12.1.1}%
+\contentsline {subsubsection}{\numberline {12.1.2}Connexion}{22}{subsubsection.12.1.2}%
+\contentsline {subsubsection}{\numberline {12.1.3}Mot de passe oublié}{23}{subsubsection.12.1.3}%
+\contentsline {subsubsection}{\numberline {12.1.4}Déconnexion}{23}{subsubsection.12.1.4}%
+\contentsline {subsection}{\numberline {12.2}Accueil et liste des destinations}{23}{subsection.12.2}%
+\contentsline {subsubsection}{\numberline {12.2.1}Carte des destinations}{25}{subsubsection.12.2.1}%
+\contentsline {subsection}{\numberline {12.3}Chatbot}{26}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Gestion des voyages}{30}{subsection.12.4}%
+\contentsline {subsubsection}{\numberline {12.4.1}Profil et liste des voyages}{30}{subsubsection.12.4.1}%
+\contentsline {subsubsection}{\numberline {12.4.2}Ajouter ou modifier un voyage}{31}{subsubsection.12.4.2}%
+\contentsline {subsubsection}{\numberline {12.4.3}Détail d'un voyage}{34}{subsubsection.12.4.3}%
+\contentsline {subsubsection}{\numberline {12.4.4}Partager un voyage}{35}{subsubsection.12.4.4}%
+\contentsline {subsubsection}{\numberline {12.4.5}Imprimer un voyage}{36}{subsubsection.12.4.5}%

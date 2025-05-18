@@ -8,7 +8,7 @@ $config = [
         'host' => '127.0.0.1',
         'dbname' => 'PlanVoyages',
         'username' => 'root',
-        'password' => '',
+        'password' => 'paris2024',
         'charset' => 'utf8mb4'
     ],
     'site' => [
